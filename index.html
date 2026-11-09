@@ -5,10 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>DAKHLA FIT — High-Performance Mobile Storefront</title>
     <meta name="description" content="100% vertical flat mobile sports storefront for Dakhla Fit. Swimming, running, and gym hardware with instant WhatsApp ordering across Morocco." />
+    <link rel="canonical" href="https://dakhla-fit.vercel.app/" />
+    <meta property="og:url" content="https://dakhla-fit.vercel.app/" />
     <meta property="og:title" content="DAKHLA FIT — High-Performance Mobile Storefront" />
     <meta property="og:description" content="100% vertical flat mobile sports storefront for Dakhla Fit. Instant WhatsApp ordering across Morocco." />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://dakhla-fit.vercel.app/" />
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -148,7 +151,7 @@
         </div>
 
         <!-- Pack Discipline Switcher Tabs (Home Fitness Pack, Running Pack, Swimming Pack) -->
-        <div class="grid grid-cols-3 gap-2 p-1.5 bg-[#141418] border border-white/10 rounded-2xl">
+        <div id="packTabsContainer" class="grid grid-cols-3 gap-2 p-1.5 bg-[#141418] border border-white/10 rounded-2xl">
           <button type="button" onclick="switchHeroPack('fitness')" id="pack-tab-fitness" class="pack-tab-btn py-2.5 px-1.5 text-center rounded-xl text-xs font-bold transition-all flex flex-col items-center justify-center gap-1 bg-[#00FF66] text-black shadow-[0_0_15px_rgba(0,255,102,0.45)] cursor-pointer ring-1 ring-[#00FF66]">
             <span class="text-lg pointer-events-none">🏋️‍♂️</span>
             <span class="leading-tight font-display font-black pointer-events-none text-xs">Fitness Pack</span>
@@ -273,9 +276,15 @@
     </section>
 
     <!-- 9. FOOTER -->
-    <footer class="max-w-xl mx-auto w-full px-4 pt-4 text-center text-zinc-500 font-mono text-xs space-y-1.5">
+    <footer class="max-w-xl mx-auto w-full px-4 pt-4 text-center text-zinc-500 font-mono text-xs space-y-2">
       <p>© 2026 DAKHLA FIT. Engineered for Moroccan Endurance.</p>
       <p>Avenue Al Oula, Dakhla Lagoon, Morocco 🇲🇦</p>
+      <div class="pt-1">
+        <a href="/admin.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/10 text-zinc-400 hover:text-[#00FF66] hover:border-[#00FF66]/40 transition-all text-[11px] font-mono">
+          <span>⚙️</span>
+          <span>Admin Portal (Dashboard)</span>
+        </a>
+      </div>
     </footer>
 
     <!-- 10. PRODUCT DETAIL BOTTOM SHEET MODAL -->
@@ -312,7 +321,7 @@
     <!-- 12. STORE & PARTICLE LOGIC -->
     <!-- ===================================================================== -->
     <script>
-      const PRODUCTS = [
+      const DEFAULT_PRODUCTS = [
         // SWIMMING
         {
           id: 'swim-1',
@@ -547,7 +556,7 @@
       // THE ULTIMATE SPORTS PACK (العرض الأساسي للباقة الرياضية)
       // Categorized bundles for Home Fitness, Running, and Swimming
       // =====================================================================
-      const PACKS = {
+      const DEFAULT_PACKS = {
         fitness: {
           id: 'pack-fitness',
           category: 'fitness',
@@ -625,12 +634,48 @@
         }
       };
 
+      let PRODUCTS = [];
+      let PACKS = {};
       let activePackKey = 'fitness';
       let currentCategory = 'all';
       let searchQuery = '';
       let sortBy = 'discount';
       let activeProduct = null;
       let modalQty = 1;
+
+      // Loads products, packs, and active hero offer from LocalStorage
+      function loadStoredData() {
+        try {
+          const storedPacks = localStorage.getItem('DAKHLA_PACKS');
+          if (storedPacks) {
+            PACKS = JSON.parse(storedPacks);
+          } else {
+            PACKS = JSON.parse(JSON.stringify(DEFAULT_PACKS));
+            localStorage.setItem('DAKHLA_PACKS', JSON.stringify(PACKS));
+          }
+        } catch (e) {
+          PACKS = JSON.parse(JSON.stringify(DEFAULT_PACKS));
+        }
+
+        try {
+          const storedProds = localStorage.getItem('DAKHLA_PRODUCTS');
+          if (storedProds) {
+            PRODUCTS = JSON.parse(storedProds);
+          } else {
+            PRODUCTS = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+            localStorage.setItem('DAKHLA_PRODUCTS', JSON.stringify(PRODUCTS));
+          }
+        } catch (e) {
+          PRODUCTS = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+        }
+
+        const storedHero = localStorage.getItem('DAKHLA_HERO_OFFER');
+        if (storedHero && PACKS[storedHero]) {
+          activePackKey = storedHero;
+        } else if (!PACKS[activePackKey]) {
+          activePackKey = Object.keys(PACKS)[0] || 'fitness';
+        }
+      }
 
       // Render product cards (100% Vertical Flat Architecture)
       function renderProducts() {
@@ -755,12 +800,18 @@
         return `https://wa.me/212600112233?text=${encodeURIComponent(msg)}`;
       }
 
-      // Switches between the 3 core packs: Home Fitness, Running, Swimming
+      // Switches between the core packs: Home Fitness, Running, Swimming
       function switchHeroPack(packKey) {
+        if (!PACKS[packKey]) {
+          packKey = Object.keys(PACKS)[0] || 'fitness';
+        }
         activePackKey = packKey;
+        try {
+          localStorage.setItem('DAKHLA_HERO_OFFER', packKey);
+        } catch(e) {}
 
         // Update Pack Tab Buttons
-        const tabKeys = ['fitness', 'running', 'swimming'];
+        const tabKeys = Object.keys(PACKS);
         tabKeys.forEach(key => {
           const tabBtn = document.getElementById('pack-tab-' + key);
           if (tabBtn) {
@@ -1206,9 +1257,25 @@
       }
 
       // Initial render & listeners
+      loadStoredData();
       initCategoryListeners();
-      renderHeroPack('fitness');
+      switchHeroPack(activePackKey);
       renderProducts();
+
+      // Real-time synchronization when admin.html updates LocalStorage
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'DAKHLA_PACKS' || e.key === 'DAKHLA_PRODUCTS' || e.key === 'DAKHLA_HERO_OFFER') {
+          loadStoredData();
+          switchHeroPack(activePackKey);
+          renderProducts();
+        }
+      });
+
+      window.addEventListener('dakhla-data-updated', () => {
+        loadStoredData();
+        switchHeroPack(activePackKey);
+        renderProducts();
+      });
 
       // Ambient 2D Canvas Floating Neon Particles (<1% CPU, Zero Lag)
       (function initParticles() {

@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DAKHLA FIT — Admin Dashboard & Catalog Management</title>
+  <meta name="description" content="Dedicated password-protected admin portal for DAKHLA FIT store management.">
+  <link rel="canonical" href="https://dakhla-fit.vercel.app/admin.html">
+  <meta property="og:url" content="https://dakhla-fit.vercel.app/admin.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800&family=Cabinet+Grotesk:wght@700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    :root {
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-display: 'Cabinet Grotesk', 'Inter', sans-serif;
+    }
+    body {
+      font-family: var(--font-sans);
+      background-color: #0a0a0a;
+      color: #ffffff;
+      -webkit-font-smoothing: antialiased;
+    }
+    .font-mono { font-family: var(--font-mono); }
+    .font-display { font-family: var(--font-display); }
+    .neon-glow {
+      box-shadow: 0 0 20px rgba(0, 255, 102, 0.35);
+    }
+    .neon-border {
+      border-color: #00FF66;
+    }
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.95; transform: scale(1.01); }
+    }
+    .pulse-neon {
+      animation: pulse-subtle 3s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-[#0a0a0a] text-white min-h-screen pb-20 selection:bg-[#00FF66] selection:text-black">
+
+  <!-- ===================================================================== -->
+  <!-- 1. PASSWORD PROTECTION LOCK SCREEN -->
+  <!-- ===================================================================== -->
+  <div id="authScreen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0a0a0a]/95 backdrop-blur-md">
+    <div class="w-full max-w-md bg-[#141418] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 text-center relative overflow-hidden">
+      <!-- Glow ambient background -->
+      <div class="absolute -top-24 -left-24 w-48 h-48 bg-[#00FF66]/20 rounded-full blur-3xl pointer-events-none"></div>
+      
+      <!-- Lock Icon -->
+      <div class="w-16 h-16 rounded-2xl bg-[#00FF66]/10 border border-[#00FF66]/30 text-[#00FF66] flex items-center justify-center text-3xl mx-auto shadow-[0_0_20px_rgba(0,255,102,0.2)]">
+        🔒
+      </div>
+
+      <div class="space-y-1.5">
+        <h1 class="text-2xl font-black font-display tracking-tight text-white uppercase">
+          DAKHLA <span class="text-[#00FF66]">FIT</span> ADMIN
+        </h1>
+        <p class="text-xs text-zinc-400 font-mono">
+          Enter master security password to manage products, pro packs, and pricing.
+        </p>
+      </div>
+
+      <!-- Password Form -->
+      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4 text-left">
+        <div>
+          <label class="block text-xs font-mono text-zinc-400 mb-1.5 uppercase font-bold">Admin Password</label>
+          <div class="relative">
+            <input 
+              type="password" 
+              id="adminPasswordInput" 
+              required
+              placeholder="Enter admin password..."
+              class="w-full px-4 py-3 bg-black/60 border border-white/15 focus:border-[#00FF66] focus:ring-1 focus:ring-[#00FF66] rounded-xl text-white font-mono text-sm outline-none transition-all pr-12"
+            />
+            <button 
+              type="button" 
+              onclick="togglePasswordVisibility()" 
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white p-1 text-xs font-mono"
+            >
+              👁️
+            </button>
+          </div>
+          <div id="loginErrorMsg" class="text-xs font-mono text-rose-400 mt-2 hidden flex items-center gap-1">
+            <span>⚠️</span> <span>Incorrect password. Please try again.</span>
+          </div>
+        </div>
+
+        <button 
+          type="submit" 
+          class="w-full py-3.5 px-4 bg-[#00FF66] hover:bg-[#00e65c] text-black font-black text-sm rounded-xl flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(0,255,102,0.4)] transition-all cursor-pointer active:scale-98"
+        >
+          <span>Unlock Admin Dashboard</span>
+          <span>→</span>
+        </button>
+
+        <div class="pt-2 p-2.5 rounded-xl bg-white/[0.03] border border-white/5 text-center text-[11px] font-mono text-zinc-400">
+          <span class="text-zinc-500">Default Access:</span> <span class="text-[#00FF66] font-bold">dakhla2026</span>
+        </div>
+      </form>
+
+      <div class="text-center pt-2">
+        <a href="/" class="text-xs font-mono text-zinc-500 hover:text-zinc-300 underline">
+          ← Return to Customer Store
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- 2. MAIN ADMIN DASHBOARD INTERFACE (Shown when authenticated) -->
+  <!-- ===================================================================== -->
+  <div id="adminDashboard" class="hidden min-h-screen flex flex-col">
+    
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-40 bg-[#0a0a0a]/90 backdrop-blur-md border-b border-white/10 px-4 py-3">
+      <div class="max-w-6xl mx-auto flex items-center justify-between gap-4">
+        
+        <div class="flex items-center gap-3">
+          <a href="/" class="flex items-center gap-2">
+            <span class="text-xl font-black font-display tracking-tight text-white uppercase">
+              DAKHLA <span class="text-[#00FF66]">FIT</span>
+            </span>
+          </a>
+          <span class="px-2.5 py-0.5 rounded-full bg-[#00FF66]/10 text-[#00FF66] border border-[#00FF66]/30 text-[10px] font-mono font-bold uppercase tracking-wider">
+            ADMIN PORTAL
+          </span>
+        </div>
+
+        <div class="flex items-center gap-2 sm:gap-3">
+          <!-- Live Store Link -->
+          <a 
+            href="https://dakhla-fit.vercel.app/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="px-3 py-1.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-xs font-mono text-zinc-300 hover:text-white flex items-center gap-1.5 transition-all"
+          >
+            <span class="text-[#00FF66]">●</span>
+            <span class="hidden sm:inline">dakhla-fit.vercel.app</span>
+            <span class="sm:hidden">Store</span>
+            <span>↗</span>
+          </a>
+
+          <!-- Reset Factory Defaults -->
+          <button 
+            type="button" 
+            onclick="confirmResetDefaults()" 
+            class="px-3 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-xs font-mono text-rose-300 hover:text-rose-200 flex items-center gap-1.5 transition-all cursor-pointer"
+            title="Reset catalog back to initial defaults"
+          >
+            <span>🔄</span>
+            <span class="hidden sm:inline">Reset Defaults</span>
+          </button>
+
+          <!-- Logout Button -->
+          <button 
+            type="button" 
+            onclick="handleLogout()" 
+            class="px-3 py-1.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-xs font-mono text-zinc-400 hover:text-white flex items-center gap-1 transition-all cursor-pointer"
+          >
+            <span>🔒</span>
+            <span class="hidden sm:inline">Logout</span>
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-6xl mx-auto w-full px-4 pt-6 space-y-6 flex-1">
+      
+      <!-- Stats & Synchronization Indicator Banner -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="p-3.5 rounded-2xl bg-[#141418] border border-white/10 flex flex-col justify-between">
+          <span class="text-[10px] font-mono uppercase text-zinc-400 font-bold">Pro Packs (Bundles)</span>
+          <div class="text-2xl font-black text-white font-display mt-1 flex items-baseline gap-1.5">
+            <span id="statPacksCount">3</span>
+            <span class="text-xs font-mono text-[#00FF66] font-normal">Active</span>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-[#141418] border border-white/10 flex flex-col justify-between">
+          <span class="text-[10px] font-mono uppercase text-zinc-400 font-bold">Single Athletic Tools</span>
+          <div class="text-2xl font-black text-white font-display mt-1 flex items-baseline gap-1.5">
+            <span id="statProductsCount">15</span>
+            <span class="text-xs font-mono text-zinc-400 font-normal">Items</span>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-[#141418] border border-white/10 flex flex-col justify-between">
+          <span class="text-[10px] font-mono uppercase text-zinc-400 font-bold">Hero Centerpiece Offer</span>
+          <div class="text-sm font-black text-[#00FF66] font-mono mt-1 truncate" id="statHeroOfferName">
+            Fitness Pack
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-[#141418] border border-white/10 flex flex-col justify-between">
+          <span class="text-[10px] font-mono uppercase text-zinc-400 font-bold">Data Synchronization</span>
+          <div class="flex items-center gap-1.5 mt-1 text-xs font-mono text-[#00FF66] font-bold">
+            <span class="w-2 h-2 rounded-full bg-[#00FF66] animate-pulse"></span>
+            <span>LocalStorage Live</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Two-Column Layout: Left = Product/Pack Editor Form, Right = Current Inventory List -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- LEFT COLUMN: PRODUCT & PACK CREATION / EDITING FORM (5 Cols on LG) -->
+        <div class="lg:col-span-5 bg-[#141418] border border-white/10 rounded-3xl p-5 sm:p-6 shadow-xl space-y-5 sticky top-20">
+          
+          <div class="flex items-center justify-between border-b border-white/10 pb-4">
+            <div>
+              <h2 id="formHeading" class="text-lg font-black text-white font-display uppercase tracking-tight flex items-center gap-2">
+                <span class="text-[#00FF66]">⚡</span>
+                <span id="formTitleText">Create New Item</span>
+              </h2>
+              <p class="text-xs text-zinc-400 font-mono mt-0.5" id="formSubtitleText">
+                Configure details and publish live to store.
+              </p>
+            </div>
+            <button 
+              type="button" 
+              id="cancelEditBtn" 
+              onclick="resetFormToCreate()" 
+              class="hidden px-2.5 py-1 rounded-lg bg-zinc-800 text-zinc-300 hover:text-white text-xs font-mono cursor-pointer"
+            >
+              Cancel Edit
+            </button>
+          </div>
+
+          <form id="itemForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+            
+            <input type="hidden" id="editItemId" value="">
+            <input type="hidden" id="editOriginalType" value="">
+
+            <!-- 1. ITEM TYPE SELECTOR -->
+            <div>
+              <label class="block text-xs font-mono text-zinc-400 mb-1.5 uppercase font-bold">
+                1. Item Type
+              </label>
+              <div class="grid grid-cols-2 gap-2 p-1 bg-black/50 border border-white/10 rounded-2xl">
+                <button 
+                  type="button" 
+                  id="typeBtnPack" 
+                  onclick="setItemType('pack')" 
+                  class="py-2 px-3 rounded-xl text-xs font-bold font-mono transition-all flex items-center justify-center gap-1.5 bg-[#00FF66] text-black shadow-sm cursor-pointer"
+                >
+                  <span>📦</span>
+                  <span>PACK / BUNDLE</span>
+                </button>
+                <button 
+                  type="button" 
+                  id="typeBtnProduct" 
+                  onclick="setItemType('product')" 
+                  class="py-2 px-3 rounded-xl text-xs font-bold font-mono transition-all flex items-center justify-center gap-1.5 text-zinc-400 hover:text-white cursor-pointer"
+                >
+                  <span>🛍️</span>
+                  <span>SINGLE PRODUCT</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- 2. SPORT DISCIPLINE CATEGORY -->
+            <div>
+              <label class="block text-xs font-mono text-zinc-400 mb-1.5 uppercase font-bold">
+                2. Sport Discipline Category
+              </label>
+              <select 
+                id="itemCategory" 
+                required 
+                onchange="handleCategoryChange()"
+                class="w-full px-3.5 py-2.5 bg-black/60 border border-white/15 focus:border-[#00FF66] focus:ring-1 focus:ring-[#00FF66] rounded-xl text-white font-mono text-xs outline-none cursor-pointer"
+              >
+                <option value="fitness">🏋️‍♂️ Home Fitness</option>
+                <option value="running">🏃‍♂️ Ultra Running</option>
+                <option value="swimming">🏊‍♂️ Swimming</option>
+              </select>
+            </div>
+
+            <!-- 3. TITLE & SUBTITLE -->
+            <div class="space-y-3">
+              <div>
+                <label class="block text-xs font-mono text-zinc-400 mb-1 uppercase font-bold">
+                  3. Title / Name
+                </label>
+                <input 
+                  type="text" 
+                  id="itemTitle" 
+                  required
+                  placeholder="e.g. THE ULTIMATE DAKHLA FITNESS PACK" 
+                  class="w-full px-3.5 py-2.5 bg-black/60 border border-white/15 focus:border-[#00FF66] rounded-xl text-white font-sans text-xs sm:text-sm outline-none"
+                />
+              </div>
+
+              <div>
+                <label class="block text-xs font-mono text-zinc-400 mb-1 uppercase font-bold">
+                  Subtitle / Arabic Tagline
+                </label>
+                <input 
+                  type="text" 
+                  id="itemSubtitle" 
+                  placeholder="e.g. العرض الأساسي للباقة — Home Fitness Master Bundle" 
+                  class="w-full px-3.5 py-2.5 bg-black/60 border border-white/15 focus:border-[#00FF66] rounded-xl text-white font-sans text-xs outline-none"
+                />
+              </div>
+            </div>
+
+            <!-- 4. IMAGE URL & QUICK PRESET PICKERS -->
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <label class="block text-xs font-mono text-zinc-400 uppercase font-bold">
+                  4. Image URL
+                </label>
+                <span class="text-[10px] font-mono text-zinc-500">Presets below</span>
+              </div>
+              <input 
+                type="text" 
+                id="itemImage" 
+                required
+                oninput="updateImagePreview()"
+                placeholder="/src/assets/images/... or https://..." 
+                class="w-full px-3.5 py-2 bg-black/60 border border-white/15 focus:border-[#00FF66] rounded-xl text-white font-mono text-xs outline-none"
+              />
+
+              <!-- Image Presets for rapid 1-click configuration -->
+              <div class="flex items-center gap-1.5 mt-1.5 flex-wrap">
+                <button 
+                  type="button" 
+                  onclick="setImagePreset('/src/assets/images/fitness_gear_showcase_1794059494749.jpg')" 
+                  class="px-2 py-1 bg-white/[0.04] hover:bg-white/[0.1] border border-white/10 rounded-lg text-[10px] font-mono text-zinc-300 cursor-pointer"
+                >
+                  🏋️ Fitness Photo
+                </button>
+                <button 
+                  type="button" 
+                  onclick="setImagePreset('/src/assets/images/running_gear_showcase_1794059494553.jpg')" 
+                  class="px-2 py-1 bg-white/[0.04] hover:bg-white/[0.1] border border-white/10 rounded-lg text-[10px] font-mono text-zinc-300 cursor-pointer"
+                >
+                  🏃 Running Photo
+                </button>
+                <button 
+                  type="button" 
+                  onclick="setImagePreset('/src/assets/images/swimming_gear_showcase_1794059493816.jpg')" 
+                  class="px-2 py-1 bg-white/[0.04] hover:bg-white/[0.1] border border-white/10 rounded-lg text-[10px] font-mono text-zinc-300 cursor-pointer"
+                >
+                  🏊 Swimming Photo
+                </button>
+              </div>
+
+              <!-- Image Preview Box -->
+              <div class="mt-2 relative w-full h-24 rounded-xl overflow-hidden bg-black/40 border border-white/10 flex items-center justify-center">
+                <img id="formImagePreview" src="" alt="Preview" class="w-full h-full object-cover hidden" />
+                <span id="formImagePlaceholder" class="text-[11px] font-mono text-zinc-500">No Image Preview</span>
+              </div>
+            </div>
+
+            <!-- 5. PRICING & AUTOMATIC DISCOUNT CALCULATION -->
+            <div class="p-3 bg-black/40 border border-white/10 rounded-2xl space-y-2.5">
+              <label class="block text-xs font-mono text-zinc-300 uppercase font-bold">
+                5. Pricing & Discounts (MAD)
+              </label>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-[10px] font-mono text-zinc-400 mb-1 uppercase">Regular Price (MAD)</label>
+                  <input 
+                    type="number" 
+                    id="itemOriginalPrice" 
+                    required 
+                    min="1"
+                    oninput="calculateSavings()"
+                    placeholder="1290" 
+                    class="w-full px-3 py-2 bg-black/60 border border-white/15 focus:border-[#00FF66] rounded-xl text-white font-mono text-xs outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-[10px] font-mono text-[#00FF66] mb-1 uppercase font-bold">Discounted Price (MAD)</label>
+                  <input 
+                    type="number" 
+                    id="itemDiscountedPrice" 
+                    required 
+                    min="1"
+                    oninput="calculateSavings()"
+                    placeholder="799" 
+                    class="w-full px-3 py-2 bg-black/60 border border-[#00FF66]/50 focus:border-[#00FF66] rounded-xl text-[#00FF66] font-mono text-xs font-bold outline-none"
+                  />
+                </div>
+              </div>
+
+              <!-- Live Discount Preview -->
+              <div class="flex items-center justify-between text-xs font-mono pt-1 text-zinc-400">
+                <span>Calculated Savings:</span>
+                <span id="previewSavings" class="text-[#00FF66] font-bold">Save 0 MAD (0% OFF)</span>
+              </div>
+            </div>
+
+            <!-- 6. BADGE / STICKER -->
+            <div>
+              <label class="block text-xs font-mono text-zinc-400 mb-1 uppercase font-bold">
+                6. Promotional Badge
+              </label>
+              <input 
+                type="text" 
+                id="itemBadge" 
+                placeholder="e.g. PRO BUNDLE / PACK · SAVE 38% · INSTAGRAM EXCLUSIVE" 
+                class="w-full px-3.5 py-2 bg-black/60 border border-white/15 focus:border-[#00FF66] rounded-xl text-white font-mono text-xs outline-none"
+              />
+            </div>
+
+            <!-- 7. THREE INCLUDED TOOLS / BULLET POINTS -->
+            <div class="space-y-2 p-3 bg-black/40 border border-white/10 rounded-2xl">
+              <div class="flex items-center justify-between">
+                <label class="block text-xs font-mono text-zinc-300 uppercase font-bold">
+                  7. Three Core Tools / Feature Bullets
+                </label>
+                <span class="text-[10px] font-mono text-[#00FF66] font-bold">Required (3)</span>
+              </div>
+
+              <!-- Bullet 1 -->
+              <div class="space-y-1">
+                <span class="text-[10px] font-mono text-zinc-400 uppercase">Item / Tool #1</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                  <input type="text" id="tool1Name" placeholder="Tool Name (e.g. 10kg Tactical Vest)" class="px-2.5 py-1.5 bg-black/60 border border-white/15 rounded-lg text-xs font-sans text-white outline-none" />
+                  <input type="text" id="tool1Spec" placeholder="Specification / Material" class="px-2.5 py-1.5 bg-black/60 border border-white/15 rounded-lg text-xs font-mono text-zinc-300 outline-none" />
+                </div>
+              </div>
+
+              <!-- Bullet 2 -->
+              <div class="space-y-1">
+                <span class="text-[10px] font-mono text-zinc-400 uppercase">Item / Tool #2</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                  <input type="text" id="tool2Name" placeholder="Tool Name (e.g. Hex Dumbbells Pair)" class="px-2.5 py-1.5 bg-black/60 border border-white/15 rounded-lg text-xs font-sans text-white outline-none" />
+                  <input type="text" id="tool2Spec" placeholder="Specification / Material" class="px-2.5 py-1.5 bg-black/60 border border-white/15 rounded-lg text-xs font-mono text-zinc-300 outline-none" />
+                </div>
+              </div>
+
+              <!-- Bullet 3 -->
+              <div class="space-y-1">
+                <span class="text-[10px] font-mono text-zinc-400 uppercase">Item / Tool #3</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                  <input type="text" id="tool3Name" placeholder="Tool Name (e.g. Suspension Straps)" class="px-2.5 py-1.5 bg-black/60 border border-white/15 rounded-lg text-xs font-sans text-white outline-none" />
+                  <input type="text" id="tool3Spec" placeholder="Specification / Material" class="px-2.5 py-1.5 bg-black/60 border border-white/15 rounded-lg text-xs font-mono text-zinc-300 outline-none" />
+                </div>
+              </div>
+            </div>
+
+            <!-- 8. HERO FEATURED OFFER TOGGLE SWITCH -->
+            <div class="p-3 bg-[#00FF66]/10 border border-[#00FF66]/30 rounded-2xl flex items-center justify-between gap-3">
+              <div>
+                <span class="text-xs font-bold font-mono text-white block flex items-center gap-1.5">
+                  <span class="text-[#00FF66]">⚡</span> Set as "Hero Featured Offer"
+                </span>
+                <span class="text-[10px] font-mono text-zinc-300 block mt-0.5">
+                  Displays this item prominently as the above-the-fold centerpiece on the customer landing page.
+                </span>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                <input type="checkbox" id="itemIsHeroOffer" class="sr-only peer">
+                <div class="w-11 h-6 bg-zinc-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#00FF66]"></div>
+              </label>
+            </div>
+
+            <!-- SUBMIT & CLEAR BUTTONS -->
+            <div class="pt-2 space-y-2">
+              <button 
+                type="submit" 
+                id="submitBtn"
+                class="w-full py-3.5 px-4 bg-[#00FF66] hover:bg-[#00e65c] text-black font-black text-sm rounded-xl flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(0,255,102,0.4)] transition-all cursor-pointer active:scale-98"
+              >
+                <span>💾</span>
+                <span id="submitBtnText">Save & Publish to Store</span>
+              </button>
+
+              <button 
+                type="button" 
+                onclick="clearForm()" 
+                class="w-full py-2 px-3 text-xs font-mono text-zinc-400 hover:text-white rounded-xl bg-transparent hover:bg-white/5 transition-all text-center cursor-pointer"
+              >
+                Clear Form
+              </button>
+            </div>
+
+          </form>
+
+        </div>
+
+        <!-- RIGHT COLUMN: CURRENT INVENTORY & CATALOG LISTING (7 Cols on LG) -->
+        <div class="lg:col-span-7 space-y-4">
+          
+          <!-- Catalog Switcher Tabs & Search Filter -->
+          <div class="bg-[#141418] border border-white/10 rounded-2xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-1.5 p-1 bg-black/40 rounded-xl border border-white/5">
+              <button 
+                type="button" 
+                id="tabShowPacks" 
+                onclick="switchInventoryTab('packs')" 
+                class="px-3 py-1.5 rounded-lg text-xs font-bold font-mono bg-[#00FF66] text-black transition-all cursor-pointer"
+              >
+                📦 Pro Packs (<span id="tabCountPacks">3</span>)
+              </button>
+              <button 
+                type="button" 
+                id="tabShowProducts" 
+                onclick="switchInventoryTab('products')" 
+                class="px-3 py-1.5 rounded-lg text-xs font-bold font-mono text-zinc-400 hover:text-white transition-all cursor-pointer"
+              >
+                🛍️ Single Gear (<span id="tabCountProducts">15</span>)
+              </button>
+            </div>
+
+            <div class="relative flex-1 max-w-xs">
+              <input 
+                type="text" 
+                id="adminSearchInput" 
+                oninput="handleSearchInventory(this.value)" 
+                placeholder="Search catalog..." 
+                class="w-full pl-8 pr-3 py-1.5 bg-black/50 border border-white/10 focus:border-[#00FF66] rounded-xl text-xs font-mono text-white outline-none"
+              />
+              <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-500 text-xs">🔍</span>
+            </div>
+          </div>
+
+          <!-- Inventory List Container -->
+          <div id="inventoryContainer" class="space-y-3">
+            <!-- Dynamically populated by renderInventory() -->
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- 3. TOAST NOTIFICATION -->
+  <!-- ===================================================================== -->
+  <div id="toastNotification" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="px-4 py-3 rounded-2xl bg-[#141418] border-2 border-[#00FF66] text-white shadow-[0_0_25px_rgba(0,255,102,0.4)] flex items-center gap-3">
+      <span class="text-[#00FF66] text-lg">✓</span>
+      <div>
+        <div id="toastTitle" class="text-xs font-bold font-mono text-white">Success</div>
+        <div id="toastMessage" class="text-[11px] font-mono text-zinc-300">Changes saved to LocalStorage!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- 4. JAVASCRIPT APPLICATION CODE -->
+  <!-- ===================================================================== -->
+  <script>
+    // Master password configuration (fallback to default)
+    const DEFAULT_MASTER_PASSWORD = 'dakhla2026';
+    
+    // Global state
+    let activeItemType = 'pack'; // 'pack' or 'product'
+    let activeInventoryTab = 'packs'; // 'packs' or 'products'
+    let editingId = null;
+    let packsData = {};
+    let productsData = [];
+    let heroOfferKey = 'fitness';
+    let searchQuery = '';
+
+    // =====================================================================
+    // DEFAULT DATA SEED (If LocalStorage is empty)
+    // =====================================================================
+    const DEFAULT_PACKS = {
+      fitness: {
+        id: 'pack-fitness',
+        category: 'fitness',
+        title: 'THE ULTIMATE DAKHLA FITNESS PACK',
+        subtitle: 'العرض الأساسي للباقة الرياضية — Home Fitness & Calisthenics Master Bundle',
+        badge: 'PRO BUNDLE / PACK · SAVE 38% · INSTAGRAM EXCLUSIVE',
+        image: '/src/assets/images/fitness_gear_showcase_1794059494749.jpg',
+        itemsSummary: '10kg Tactical Weight Vest + Hex Dumbbells Pair + Suspension Straps',
+        originalPrice: 1290,
+        discountedPrice: 799,
+        discountPercent: 38,
+        bundledItems: [
+          { num: '1', name: '10kg Tactical Weight Vest', spec: 'Laser-Cut Steel Plates + 1000D Ballistic Cordura Nylon' },
+          { num: '2', name: 'Hex Rubber Dumbbells (Pair)', spec: 'Anti-Roll Hex Shape + Knurled Chrome Grip' },
+          { num: '3', name: 'Heavy-Duty Suspension Straps', spec: 'Door & Bar Anchor System + Military-Grade Carabiners' }
+        ],
+        bullets: [
+          { title: 'Pro-Grade Durability', text: 'Ballistic 1000D Cordura nylon with laser-cut steel plates tested for high-reps, sweat, and Sahara grit.' },
+          { title: 'Designed for Maximum Output', text: 'Complete 3-tool synergy to build functional strength, core stability, and explosive power at home.' },
+          { title: 'Cash on Delivery Across Morocco', text: 'Free 24-48h express delivery. Open, inspect, and verify your pack before paying at your door.' }
+        ],
+        claimedCount: 42,
+        stockLeft: 8,
+        reviews: 248
+      },
+      running: {
+        id: 'pack-running',
+        category: 'running',
+        title: 'THE ULTIMATE DAKHLA RUNNING PACK',
+        subtitle: 'العرض الأساسي للباقة الرياضية — Ultra Running & Desert Trail Endurance Pack',
+        badge: 'PRO BUNDLE / PACK · SAVE 39% · INSTAGRAM EXCLUSIVE',
+        image: '/src/assets/images/running_gear_showcase_1794059494553.jpg',
+        itemsSummary: 'TrailFlow Carbon 12L Vest + DuneShield Polarized Eyewear + NightPulse LED Bands',
+        originalPrice: 1220,
+        discountedPrice: 749,
+        discountPercent: 39,
+        bundledItems: [
+          { num: '1', name: 'TrailFlow Carbon 12L Hydration Vest', spec: 'Zero-Bounce Ergonomic Fit + Dual 500ml Soft Flasks' },
+          { num: '2', name: 'DuneShield Polarized Anti-Sand Eyewear', spec: 'Hydrophobic UV400 Wrap-Around Lenses' },
+          { num: '3', name: 'NightPulse High-Visibility LED Bands', spec: 'USB-C Rechargeable Strobe Armbands for Night Runs' }
+        ],
+        bullets: [
+          { title: 'Pro-Grade Durability', text: 'Anti-sand hydrophobic optics and honeycomb 3D breathable mesh built for coastal trails and 30-knot winds.' },
+          { title: 'Designed for Maximum Output', text: 'Zero-bounce anatomical pack with dual 500ml flasks engineered for 40km+ desert ultramarathon endurance.' },
+          { title: 'Cash on Delivery Across Morocco', text: 'Free 24-48h courier shipping across all 12 regions in Morocco with door-to-door tracking.' }
+        ],
+        claimedCount: 38,
+        stockLeft: 12,
+        reviews: 195
+      },
+      swimming: {
+        id: 'pack-swimming',
+        category: 'swimming',
+        title: 'THE ULTIMATE DAKHLA SWIMMING PACK',
+        subtitle: 'العرض الأساسي للباقة الرياضية — Atlantic Ocean & Lagoon Open-Water Bundle',
+        badge: 'PRO BUNDLE / PACK · SAVE 41% · INSTAGRAM EXCLUSIVE',
+        image: '/src/assets/images/swimming_gear_showcase_1794059493816.jpg',
+        itemsSummary: 'HydroPro Polarized Goggles + LagoonShield 3mm Cap + 30L Safety Tow Float',
+        originalPrice: 1180,
+        discountedPrice: 699,
+        discountPercent: 41,
+        bundledItems: [
+          { num: '1', name: 'HydroPro Polarized Open-Water Goggles', spec: '180° Panoramic UV400 Anti-Glare Ocean Lenses' },
+          { num: '2', name: 'LagoonShield 3mm Yamamoto Neoprene Cap', spec: 'Cold-Water Atlantic Thermal Insulation & Chin Strap' },
+          { num: '3', name: 'Safety Ocean 30L Waterproof Tow Float', spec: '180N Buoyant Drybag + Integrated Rescue Whistle' }
+        ],
+        bullets: [
+          { title: 'Pro-Grade Durability', text: '100% Japanese soft silicone and blind-stitched Yamamoto neoprene resistant against Atlantic salt and rocks.' },
+          { title: 'Designed for Maximum Output', text: 'UV400 anti-glare curved lenses cut ocean reflections, while 180N buoyant drybag keeps essentials 100% dry.' },
+          { title: 'Cash on Delivery Across Morocco', text: 'Direct courier delivery in 24-48h. Pay with cash only after inspecting your equipment.' }
+        ],
+        claimedCount: 45,
+        stockLeft: 5,
+        reviews: 168
+      }
+    };
+
+    const DEFAULT_PRODUCTS = [
+      {
+        id: 'swim-1',
+        name: 'HydroPro Carbon Mirrored Goggles',
+        category: 'swimming',
+        tagline: 'Competition hydrodynamic racing goggles with polarized mirror',
+        originalPrice: 499,
+        discountedPrice: 349,
+        discountPercent: 30,
+        rating: 4.9,
+        reviews: 142,
+        image: '/src/assets/images/swimming_gear_showcase_1794059493816.jpg',
+        badge: 'BESTSELLER',
+        desc: 'Anti-fog mirrored curved lenses with UV400 defense and leakproof Japanese silicone seal. Cuts ocean glare and lagoon reflection.',
+        specs: { 'Lens': 'UV400 Polarized', 'Gasket': '100% Silicone', 'Field': '180° Panoramic' }
+      },
+      {
+        id: 'swim-2',
+        name: 'LagoonShield Thermal Neoprene Cap 3mm',
+        category: 'swimming',
+        tagline: 'Thermal barrier engineered for cold Atlantic swells & lagoon winds',
+        originalPrice: 320,
+        discountedPrice: 229,
+        discountPercent: 28,
+        rating: 4.8,
+        reviews: 86,
+        image: '/src/assets/images/swimming_gear_showcase_1794059493816.jpg',
+        badge: 'COLD WATER',
+        desc: 'Essential head protection when training in Dakhla’s Atlantic swells where water temperature drops and high winds increase windchill.',
+        specs: { 'Thickness': '3.0mm Yamamoto', 'Seams': 'Blind-Stitched GBS', 'Temp': '12°C - 19°C' }
+      },
+      {
+        id: 'swim-3',
+        name: 'AeroFin Dual-Density Silicone Fins',
+        category: 'swimming',
+        tagline: 'Short-blade propulsive fins for cadence and ankle power',
+        originalPrice: 580,
+        discountedPrice: 399,
+        discountPercent: 31,
+        rating: 4.9,
+        reviews: 97,
+        image: '/src/assets/images/swimming_gear_showcase_1794059493816.jpg',
+        badge: 'PRO TRAINING',
+        desc: 'Short angled silicone blade reinforces flutter kick tempo without cramping. 100% natural soft silicone.',
+        specs: { 'Material': 'Natural Silicone', 'Angle': '15° Forward', 'Weight': '620g' }
+      },
+      {
+        id: 'swim-4',
+        name: 'Atlantic Storm 30L DryBag & Tow Float',
+        category: 'swimming',
+        tagline: 'Dual-chamber high-buoyancy drypack & safety swim buoy',
+        originalPrice: 390,
+        discountedPrice: 269,
+        discountPercent: 31,
+        rating: 4.7,
+        reviews: 64,
+        image: '/src/assets/images/swimming_gear_showcase_1794059493816.jpg',
+        badge: 'SAFETY ESSENTIAL',
+        desc: 'Bright neon ocean beacon with 180N buoyancy rating. Keeps smartphone, keys, and dry clothes dry while open-water training.',
+        specs: { 'Volume': '30 Litres', 'Buoyancy': '180N', 'Material': '500D PVC Tarpaulin' }
+      },
+      {
+        id: 'swim-5',
+        name: 'Vortex Hydro Power Hand Paddles',
+        category: 'swimming',
+        tagline: 'Hydrodynamic stroke resistance paddles for pull power',
+        originalPrice: 290,
+        discountedPrice: 199,
+        discountPercent: 31,
+        rating: 4.8,
+        reviews: 112,
+        image: '/src/assets/images/swimming_gear_showcase_1794059493816.jpg',
+        badge: 'TECHNIQUE',
+        desc: 'Engineered flow holes maintain water feel while building upper-body lat, tricep, and shoulder stroke power.',
+        specs: { 'Blade': 'Polypropylene', 'Straps': 'Tubular Silicone', 'Size': 'M / L Pro' }
+      },
+      {
+        id: 'run-1',
+        name: 'TrailFlow Carbon 12L Hydration Vest',
+        category: 'running',
+        tagline: 'Ultralight zero-bounce vest with dual 500ml insulated flasks',
+        originalPrice: 890,
+        discountedPrice: 599,
+        discountPercent: 33,
+        rating: 4.9,
+        reviews: 178,
+        image: '/src/assets/images/running_gear_showcase_1794059494553.jpg',
+        badge: 'TOP SELLER',
+        desc: 'Anatomical compression vest tested on 50km desert trail ultra runs across White Dune trails. Zero bounce under full capacity.',
+        specs: { 'Capacity': '12L Storage', 'Weight': '195g (Dry)', 'Flasks': '2x 500ml HydraPak' }
+      },
+      {
+        id: 'run-2',
+        name: 'DuneShield Polarized Trail Eyewear',
+        category: 'running',
+        tagline: 'Frameless wraparound sunglasses with sand & UV defense',
+        originalPrice: 520,
+        discountedPrice: 359,
+        discountPercent: 31,
+        rating: 4.8,
+        reviews: 95,
+        image: '/src/assets/images/running_gear_showcase_1794059494553.jpg',
+        badge: 'SAND PROOF',
+        desc: 'Hydrophobic and oleophobic photochromic shield lens that deflects whipped sand and harsh Sahara sun glare.',
+        specs: { 'Optics': 'Category 3 Polarized', 'Weight': '26g Ultra-light', 'Frame': 'TR90 Swiss Memory' }
+      },
+      {
+        id: 'run-3',
+        name: 'NightPulse High-Visibility LED Armbands',
+        category: 'running',
+        tagline: 'Rechargeable weatherproof 360° visibility strobe band',
+        originalPrice: 220,
+        discountedPrice: 149,
+        discountPercent: 32,
+        rating: 4.9,
+        reviews: 130,
+        image: '/src/assets/images/running_gear_showcase_1794059494553.jpg',
+        badge: 'SAFETY FIRST',
+        desc: 'Provides 800m nighttime visibility for coastal road runs. USB-C rechargeable with 14h continuous battery life.',
+        specs: { 'Battery': '14h Runtime', 'Charging': 'USB-C Fast', 'Rating': 'IPX6 Waterproof' }
+      },
+      {
+        id: 'run-4',
+        name: 'StrataGrip Pro Trail Carbon Poles',
+        category: 'running',
+        tagline: '3-fold carbon fiber running poles with quick-flick deployment',
+        originalPrice: 790,
+        discountedPrice: 549,
+        discountPercent: 31,
+        rating: 4.9,
+        reviews: 84,
+        image: '/src/assets/images/running_gear_showcase_1794059494553.jpg',
+        badge: '100% CARBON',
+        desc: 'Rigid 3K carbon shafts that absorb vibration on descents while saving up to 25% leg power on steep dune ascents.',
+        specs: { 'Shaft': '3K High-Modulus Carbon', 'Weight': '160g / Pole', 'Folded': '36cm Compact' }
+      },
+      {
+        id: 'run-5',
+        name: 'SandGaiter Elastic Dune Protectors',
+        category: 'running',
+        tagline: 'Breathable ankle gaiters blocking sand, stones, and grit',
+        originalPrice: 240,
+        discountedPrice: 169,
+        discountPercent: 30,
+        rating: 4.7,
+        reviews: 73,
+        image: '/src/assets/images/running_gear_showcase_1794059494553.jpg',
+        badge: 'DAKHLA TESTED',
+        desc: 'Eliminates mid-run shoe emptying. Tight elastane weave wraps around shoe collar preventing Sahara dust penetration.',
+        specs: { 'Material': 'High-Tension Spandex', 'Closure': 'Reinforced Hypalon', 'Weight': '42g Pair' }
+      },
+      {
+        id: 'fit-1',
+        name: 'ProGrip Hex Rubber Dumbbells (Pair)',
+        category: 'fitness',
+        tagline: 'Heavy-duty steel core dumbbells with anti-roll hexagonal rubber',
+        originalPrice: 650,
+        discountedPrice: 449,
+        discountPercent: 31,
+        rating: 4.9,
+        reviews: 210,
+        image: '/src/assets/images/fitness_gear_showcase_1794059494749.jpg',
+        badge: 'HOT DEAL',
+        desc: 'Solid cast iron with vulcanized virgin rubber heads that protect floors and reduce noise. Ergonomic chrome knurled grip.',
+        specs: { 'Core': 'Solid Cast Iron', 'Coating': 'Virgin Rubber', 'Grip': 'Ergonomic Knurled' }
+      },
+      {
+        id: 'fit-2',
+        name: 'TitanCore Cast Iron Kettlebell 16kg',
+        category: 'fitness',
+        tagline: 'Competition-grade powder-coated kettlebell for swings & snatches',
+        originalPrice: 580,
+        discountedPrice: 399,
+        discountPercent: 31,
+        rating: 4.9,
+        reviews: 165,
+        image: '/src/assets/images/fitness_gear_showcase_1794059494749.jpg',
+        badge: 'STRENGTH ESSENTIAL',
+        desc: 'Single-piece gravity cast iron with smooth textured powder-coat that holds chalk and resists outdoor rust.',
+        specs: { 'Weight': '16 kg', 'Handle': '35mm Smooth', 'Finish': 'Matte Powder Coat' }
+      },
+      {
+        id: 'fit-3',
+        name: 'AeroSpeed High-RPM Aluminum Speed Rope',
+        category: 'fitness',
+        tagline: 'Dual ball-bearing cable jump rope for double-unders',
+        originalPrice: 260,
+        discountedPrice: 179,
+        discountPercent: 31,
+        rating: 4.8,
+        reviews: 144,
+        image: '/src/assets/images/fitness_gear_showcase_1794059494749.jpg',
+        badge: 'CARDIO MASTER',
+        desc: '360° fluid swivel bearings deliver blazing speed for unbroken double-unders. Aircraft aluminum knurled handle.',
+        specs: { 'Bearings': 'Dual High-Speed', 'Cable': '2.5mm Coated Steel', 'Handle': 'Aircraft Aluminum' }
+      },
+      {
+        id: 'fit-4',
+        name: 'ForceBands 5-Level Heavy Resistance Set',
+        category: 'fitness',
+        tagline: '100% Malaysian latex looped power resistance bands',
+        originalPrice: 380,
+        discountedPrice: 259,
+        discountPercent: 32,
+        rating: 4.9,
+        reviews: 198,
+        image: '/src/assets/images/fitness_gear_showcase_1794059494749.jpg',
+        badge: 'HOME GYM MUST',
+        desc: 'Continuous layered latex bands offering 5 to 70kg of dynamic resistance for pull-up assists, squats, and mobility.',
+        specs: { 'Levels': '5 Bands (5-70kg)', 'Material': 'Natural Malaysian Latex', 'Length': '208cm Loop' }
+      },
+      {
+        id: 'fit-5',
+        name: 'Tactical Plate Carrier Weight Vest 10kg',
+        category: 'fitness',
+        tagline: 'Adjustable bodyweight conditioning vest with laser-cut plates',
+        originalPrice: 950,
+        discountedPrice: 649,
+        discountPercent: 32,
+        rating: 4.9,
+        reviews: 122,
+        image: '/src/assets/images/fitness_gear_showcase_1794059494749.jpg',
+        badge: 'HEAVY OUTPUT',
+        desc: 'Constructed from ballistic 1000D Cordura nylon with padded yoke shoulder straps that distribute plate weight evenly.',
+        specs: { 'Weight': '10 kg Total', 'Fabric': '1000D Cordura', 'Plates': 'Laser-cut Steel' }
+      }
+    ];
+
+    // =====================================================================
+    // STORAGE & SYNCHRONIZATION HELPERS
+    // =====================================================================
+    function loadData() {
+      // 1. Load Packs
+      try {
+        const storedPacks = localStorage.getItem('DAKHLA_PACKS');
+        if (storedPacks) {
+          packsData = JSON.parse(storedPacks);
+        } else {
+          packsData = JSON.parse(JSON.stringify(DEFAULT_PACKS));
+          localStorage.setItem('DAKHLA_PACKS', JSON.stringify(packsData));
+        }
+      } catch (err) {
+        console.error('Error loading packs from storage:', err);
+        packsData = JSON.parse(JSON.stringify(DEFAULT_PACKS));
+      }
+
+      // 2. Load Products
+      try {
+        const storedProducts = localStorage.getItem('DAKHLA_PRODUCTS');
+        if (storedProducts) {
+          productsData = JSON.parse(storedProducts);
+        } else {
+          productsData = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+          localStorage.setItem('DAKHLA_PRODUCTS', JSON.stringify(productsData));
+        }
+      } catch (err) {
+        console.error('Error loading products from storage:', err);
+        productsData = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+      }
+
+      // 3. Load Active Hero Offer Key
+      const storedHero = localStorage.getItem('DAKHLA_HERO_OFFER');
+      if (storedHero) {
+        heroOfferKey = storedHero;
+      } else {
+        heroOfferKey = 'fitness';
+        localStorage.setItem('DAKHLA_HERO_OFFER', heroOfferKey);
+      }
+    }
+
+    function saveData() {
+      try {
+        localStorage.setItem('DAKHLA_PACKS', JSON.stringify(packsData));
+        localStorage.setItem('DAKHLA_PRODUCTS', JSON.stringify(productsData));
+        localStorage.setItem('DAKHLA_HERO_OFFER', heroOfferKey);
+
+        // Dispatch a custom event for same-tab updates
+        window.dispatchEvent(new Event('dakhla-data-updated'));
+        
+        showToast('✓ Saved Successfully', 'Changes synced live to store LocalStorage.');
+        updateStats();
+        renderInventory();
+      } catch (err) {
+        console.error('Failed to save to localStorage:', err);
+        showToast('Error', 'Could not save to LocalStorage: ' + err.message);
+      }
+    }
+
+    // =====================================================================
+    // AUTHENTICATION LOGIC
+    // =====================================================================
+    function checkAuth() {
+      const isAuth = sessionStorage.getItem('DAKHLA_ADMIN_AUTH') === 'true';
+      const authScreen = document.getElementById('authScreen');
+      const adminDashboard = document.getElementById('adminDashboard');
+
+      if (isAuth) {
+        authScreen.classList.add('hidden');
+        adminDashboard.classList.remove('hidden');
+        loadData();
+        updateStats();
+        renderInventory();
+      } else {
+        authScreen.classList.remove('hidden');
+        adminDashboard.classList.add('hidden');
+        setTimeout(() => {
+          document.getElementById('adminPasswordInput')?.focus();
+        }, 100);
+      }
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const input = document.getElementById('adminPasswordInput');
+      const errorMsg = document.getElementById('loginErrorMsg');
+      const val = input.value.trim();
+
+      const storedPass = localStorage.getItem('DAKHLA_ADMIN_PASSWORD') || DEFAULT_MASTER_PASSWORD;
+
+      if (val === storedPass) {
+        sessionStorage.setItem('DAKHLA_ADMIN_AUTH', 'true');
+        errorMsg.classList.add('hidden');
+        input.value = '';
+        checkAuth();
+        showToast('Admin Logged In', 'Welcome to DAKHLA FIT Control Center');
+      } else {
+        errorMsg.classList.remove('hidden');
+        input.classList.add('border-rose-500');
+        input.focus();
+      }
+    }
+
+    function handleLogout() {
+      sessionStorage.removeItem('DAKHLA_ADMIN_AUTH');
+      checkAuth();
+      showToast('Logged Out', 'Admin session terminated safely.');
+    }
+
+    function togglePasswordVisibility() {
+      const input = document.getElementById('adminPasswordInput');
+      if (input.type === 'password') input.type = 'text';
+      else input.type = 'password';
+    }
+
+    // =====================================================================
+    // UI STATS & INVENTORY RENDERING
+    // =====================================================================
+    function updateStats() {
+      const packsCount = Object.keys(packsData).length;
+      const prodsCount = productsData.length;
+
+      document.getElementById('statPacksCount').innerText = packsCount;
+      document.getElementById('statProductsCount').innerText = prodsCount;
+      document.getElementById('tabCountPacks').innerText = packsCount;
+      document.getElementById('tabCountProducts').innerText = prodsCount;
+
+      let heroName = heroOfferKey;
+      if (packsData[heroOfferKey]) {
+        heroName = packsData[heroOfferKey].title.replace('THE ULTIMATE DAKHLA ', '') || heroOfferKey;
+      }
+      document.getElementById('statHeroOfferName').innerText = heroName;
+    }
+
+    function switchInventoryTab(tab) {
+      activeInventoryTab = tab;
+      const btnPacks = document.getElementById('tabShowPacks');
+      const btnProds = document.getElementById('tabShowProducts');
+
+      if (tab === 'packs') {
+        btnPacks.className = 'px-3 py-1.5 rounded-lg text-xs font-bold font-mono bg-[#00FF66] text-black transition-all cursor-pointer';
+        btnProds.className = 'px-3 py-1.5 rounded-lg text-xs font-bold font-mono text-zinc-400 hover:text-white transition-all cursor-pointer';
+      } else {
+        btnProds.className = 'px-3 py-1.5 rounded-lg text-xs font-bold font-mono bg-[#00FF66] text-black transition-all cursor-pointer';
+        btnPacks.className = 'px-3 py-1.5 rounded-lg text-xs font-bold font-mono text-zinc-400 hover:text-white transition-all cursor-pointer';
+      }
+
+      renderInventory();
+    }
+
+    function handleSearchInventory(query) {
+      searchQuery = (query || '').toLowerCase().trim();
+      renderInventory();
+    }
+
+    function renderInventory() {
+      const container = document.getElementById('inventoryContainer');
+      if (!container) return;
+
+      if (activeInventoryTab === 'packs') {
+        // Render Packs
+        let packsList = Object.entries(packsData).map(([key, pack]) => ({ key, ...pack }));
+
+        if (searchQuery) {
+          packsList = packsList.filter(p => 
+            p.title.toLowerCase().includes(searchQuery) ||
+            p.category.toLowerCase().includes(searchQuery) ||
+            p.itemsSummary.toLowerCase().includes(searchQuery)
+          );
+        }
+
+        if (packsList.length === 0) {
+          container.innerHTML = `
+            <div class="p-8 text-center text-zinc-500 font-mono text-xs bg-[#141418] border border-white/5 rounded-2xl">
+              No pro packs matching "${searchQuery}".
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = packsList.map(pack => {
+          const isHero = (heroOfferKey === pack.key);
+          const savings = pack.originalPrice - pack.discountedPrice;
+
+          return `
+            <div class="p-4 rounded-2xl bg-[#141418] border ${isHero ? 'border-[#00FF66] shadow-[0_0_20px_rgba(0,255,102,0.15)]' : 'border-white/10'} space-y-3 transition-all">
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-16 h-16 rounded-xl overflow-hidden bg-black/60 shrink-0 border border-white/10">
+                    <img src="${pack.image}" alt="${pack.title}" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=800&auto=format&fit=crop'" />
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="text-[10px] font-mono font-bold uppercase text-[#00FF66] bg-[#00FF66]/10 px-2 py-0.5 rounded border border-[#00FF66]/30">
+                        ${pack.category} BUNDLE
+                      </span>
+                      ${isHero ? `
+                        <span class="text-[10px] font-mono font-black uppercase text-black bg-[#00FF66] px-2 py-0.5 rounded shadow-sm">
+                          ★ ACTIVE HERO OFFER
+                        </span>
+                      ` : ''}
+                      <span class="text-[10px] font-mono text-zinc-500">-${pack.discountPercent}% OFF</span>
+                    </div>
+                    <h3 class="text-sm font-bold text-white font-display mt-0.5 leading-snug">
+                      ${pack.title}
+                    </h3>
+                    <div class="text-[11px] font-mono text-zinc-400 truncate max-w-sm">
+                      ${pack.itemsSummary}
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Price tag -->
+                <div class="text-right shrink-0">
+                  <span class="text-xs text-zinc-500 line-through font-mono block">${pack.originalPrice} MAD</span>
+                  <span class="text-base font-black text-[#00FF66] font-display">${pack.discountedPrice} MAD</span>
+                </div>
+              </div>
+
+              <!-- Tools Breakdown Preview -->
+              <div class="p-2.5 rounded-xl bg-black/30 border border-white/5 text-[11px] font-mono text-zinc-300">
+                <span class="text-zinc-500 uppercase block mb-1 text-[9px] font-bold">Included 3-in-1 Tools:</span>
+                ${pack.bundledItems ? pack.bundledItems.map(it => `
+                  <div class="flex items-center justify-between text-[10px] py-0.5 border-b border-white/5 last:border-0">
+                    <span class="text-white font-bold">[${it.num}] ${it.name}</span>
+                    <span class="text-zinc-500 truncate max-w-[150px]">${it.spec}</span>
+                  </div>
+                `).join('') : pack.itemsSummary}
+              </div>
+
+              <!-- Actions -->
+              <div class="flex items-center justify-between pt-1 border-t border-white/5">
+                <button 
+                  type="button" 
+                  onclick="setAsHeroOffer('${pack.key}')" 
+                  class="px-2.5 py-1.5 rounded-lg text-xs font-mono font-bold ${isHero ? 'bg-[#00FF66] text-black shadow-sm' : 'bg-white/[0.05] hover:bg-[#00FF66]/20 text-zinc-300 hover:text-[#00FF66] border border-white/10'} transition-all cursor-pointer"
+                >
+                  ${isHero ? '★ Current Hero Offer' : '☆ Set As Hero Centerpiece'}
+                </button>
+
+                <div class="flex items-center gap-1.5">
+                  <button 
+                    type="button" 
+                    onclick="loadForEdit('pack', '${pack.key}')" 
+                    class="px-3 py-1.5 rounded-lg bg-white/[0.05] hover:bg-white/10 border border-white/10 text-xs font-mono text-white transition-all cursor-pointer"
+                  >
+                    ✏️ Edit
+                  </button>
+                  <button 
+                    type="button" 
+                    onclick="deleteItem('pack', '${pack.key}')" 
+                    class="px-2.5 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 border border-rose-500/20 text-xs font-mono transition-all cursor-pointer"
+                  >
+                    🗑️
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          `;
+        }).join('');
+
+      } else {
+        // Render Single Products
+        let list = [...productsData];
+
+        if (searchQuery) {
+          list = list.filter(p => 
+            p.name.toLowerCase().includes(searchQuery) ||
+            p.category.toLowerCase().includes(searchQuery) ||
+            p.tagline.toLowerCase().includes(searchQuery)
+          );
+        }
+
+        if (list.length === 0) {
+          container.innerHTML = `
+            <div class="p-8 text-center text-zinc-500 font-mono text-xs bg-[#141418] border border-white/5 rounded-2xl">
+              No products matching "${searchQuery}".
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = list.map(prod => {
+          const isHero = (heroOfferKey === prod.id);
+          return `
+            <div class="p-3.5 rounded-2xl bg-[#141418] border ${isHero ? 'border-[#00FF66] shadow-[0_0_20px_rgba(0,255,102,0.15)]' : 'border-white/10'} flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 transition-all">
+              <div class="flex items-center gap-3">
+                <div class="w-14 h-14 rounded-xl overflow-hidden bg-black/60 shrink-0 border border-white/10">
+                  <img src="${prod.image}" alt="${prod.name}" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=800&auto=format&fit=crop'" />
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-[10px] font-mono uppercase text-zinc-400">
+                      ${prod.category}
+                    </span>
+                    <span class="text-[10px] font-mono text-[#00FF66] font-bold">
+                      -${prod.discountPercent}% OFF
+                    </span>
+                    ${prod.badge ? `
+                      <span class="text-[9px] font-mono text-black bg-[#00FF66] px-1.5 py-0.2 rounded font-black">
+                        ${prod.badge}
+                      </span>
+                    ` : ''}
+                  </div>
+                  <h4 class="text-xs sm:text-sm font-bold text-white font-display">
+                    ${prod.name}
+                  </h4>
+                  <p class="text-[10px] font-mono text-zinc-500 truncate max-w-xs">
+                    ${prod.tagline}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Price & Actions -->
+              <div class="flex items-center justify-between w-full sm:w-auto gap-3 shrink-0">
+                <div class="text-left sm:text-right">
+                  <span class="text-[10px] text-zinc-500 line-through font-mono block">${prod.originalPrice} MAD</span>
+                  <span class="text-sm font-black text-[#00FF66] font-display">${prod.discountedPrice} MAD</span>
+                </div>
+
+                <div class="flex items-center gap-1.5">
+                  <button 
+                    type="button" 
+                    onclick="loadForEdit('product', '${prod.id}')" 
+                    class="px-2.5 py-1.5 rounded-lg bg-white/[0.05] hover:bg-white/10 border border-white/10 text-xs font-mono text-white transition-all cursor-pointer"
+                  >
+                    ✏️ Edit
+                  </button>
+                  <button 
+                    type="button" 
+                    onclick="deleteItem('product', '${prod.id}')" 
+                    class="px-2 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 border border-rose-500/20 text-xs font-mono transition-all cursor-pointer"
+                  >
+                    🗑️
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    // =====================================================================
+    // FORM BEHAVIORS & INTERACTION
+    // =====================================================================
+    function setItemType(type) {
+      activeItemType = type;
+      const btnPack = document.getElementById('typeBtnPack');
+      const btnProd = document.getElementById('typeBtnProduct');
+
+      if (type === 'pack') {
+        btnPack.className = 'py-2 px-3 rounded-xl text-xs font-bold font-mono transition-all flex items-center justify-center gap-1.5 bg-[#00FF66] text-black shadow-sm cursor-pointer';
+        btnProd.className = 'py-2 px-3 rounded-xl text-xs font-bold font-mono transition-all flex items-center justify-center gap-1.5 text-zinc-400 hover:text-white cursor-pointer';
+      } else {
+        btnProd.className = 'py-2 px-3 rounded-xl text-xs font-bold font-mono transition-all flex items-center justify-center gap-1.5 bg-[#00FF66] text-black shadow-sm cursor-pointer';
+        btnPack.className = 'py-2 px-3 rounded-xl text-xs font-bold font-mono transition-all flex items-center justify-center gap-1.5 text-zinc-400 hover:text-white cursor-pointer';
+      }
+    }
+
+    function setImagePreset(url) {
+      document.getElementById('itemImage').value = url;
+      updateImagePreview();
+    }
+
+    function updateImagePreview() {
+      const url = document.getElementById('itemImage').value.trim();
+      const img = document.getElementById('formImagePreview');
+      const placeholder = document.getElementById('formImagePlaceholder');
+
+      if (url) {
+        img.src = url;
+        img.classList.remove('hidden');
+        placeholder.classList.add('hidden');
+      } else {
+        img.classList.add('hidden');
+        placeholder.classList.remove('hidden');
+      }
+    }
+
+    function calculateSavings() {
+      const orig = parseFloat(document.getElementById('itemOriginalPrice').value) || 0;
+      const disc = parseFloat(document.getElementById('itemDiscountedPrice').value) || 0;
+      const preview = document.getElementById('previewSavings');
+
+      if (orig > 0 && disc > 0 && orig >= disc) {
+        const diff = orig - disc;
+        const pct = Math.round((diff / orig) * 100);
+        preview.innerText = `Save ${diff} MAD (${pct}% OFF)`;
+      } else if (disc > orig && orig > 0) {
+        preview.innerText = `Warning: Discounted price is higher than regular price`;
+      } else {
+        preview.innerText = `Save 0 MAD (0% OFF)`;
+      }
+    }
+
+    function handleCategoryChange() {
+      // Auto-suggest preset image if image input is empty
+      const cat = document.getElementById('itemCategory').value;
+      const imgInput = document.getElementById('itemImage');
+      if (!imgInput.value.trim()) {
+        if (cat === 'fitness') setImagePreset('/src/assets/images/fitness_gear_showcase_1794059494749.jpg');
+        else if (cat === 'running') setImagePreset('/src/assets/images/running_gear_showcase_1794059494553.jpg');
+        else if (cat === 'swimming') setImagePreset('/src/assets/images/swimming_gear_showcase_1794059493816.jpg');
+      }
+    }
+
+    function setAsHeroOffer(key) {
+      heroOfferKey = key;
+      saveData();
+      showToast('Hero Offer Updated', `"${key.toUpperCase()}" is now the hero centerpiece on the store.`);
+    }
+
+    function loadForEdit(type, id) {
+      editingId = id;
+      document.getElementById('editItemId').value = id;
+      document.getElementById('editOriginalType').value = type;
+      setItemType(type);
+
+      const cancelBtn = document.getElementById('cancelEditBtn');
+      const heading = document.getElementById('formTitleText');
+      const submitText = document.getElementById('submitBtnText');
+      cancelBtn.classList.remove('hidden');
+      heading.innerText = `Edit ${type === 'pack' ? 'Pack' : 'Product'}`;
+      submitText.innerText = 'Update & Save Changes';
+
+      if (type === 'pack') {
+        const pack = packsData[id];
+        if (!pack) return;
+
+        document.getElementById('itemCategory').value = pack.category || 'fitness';
+        document.getElementById('itemTitle').value = pack.title || '';
+        document.getElementById('itemSubtitle').value = pack.subtitle || '';
+        document.getElementById('itemImage').value = pack.image || '';
+        document.getElementById('itemOriginalPrice').value = pack.originalPrice || '';
+        document.getElementById('itemDiscountedPrice').value = pack.discountedPrice || '';
+        document.getElementById('itemBadge').value = pack.badge || '';
+        document.getElementById('itemIsHeroOffer').checked = (heroOfferKey === id);
+
+        // Populate bullets/tools
+        if (pack.bundledItems && pack.bundledItems.length >= 3) {
+          document.getElementById('tool1Name').value = pack.bundledItems[0]?.name || '';
+          document.getElementById('tool1Spec').value = pack.bundledItems[0]?.spec || '';
+          document.getElementById('tool2Name').value = pack.bundledItems[1]?.name || '';
+          document.getElementById('tool2Spec').value = pack.bundledItems[1]?.spec || '';
+          document.getElementById('tool3Name').value = pack.bundledItems[2]?.name || '';
+          document.getElementById('tool3Spec').value = pack.bundledItems[2]?.spec || '';
+        } else {
+          document.getElementById('tool1Name').value = pack.itemsSummary || '';
+        }
+      } else {
+        const prod = productsData.find(p => p.id === id);
+        if (!prod) return;
+
+        document.getElementById('itemCategory').value = prod.category || 'fitness';
+        document.getElementById('itemTitle').value = prod.name || '';
+        document.getElementById('itemSubtitle').value = prod.tagline || '';
+        document.getElementById('itemImage').value = prod.image || '';
+        document.getElementById('itemOriginalPrice').value = prod.originalPrice || '';
+        document.getElementById('itemDiscountedPrice').value = prod.discountedPrice || '';
+        document.getElementById('itemBadge').value = prod.badge || '';
+        document.getElementById('itemIsHeroOffer').checked = (heroOfferKey === id);
+
+        const specsEntries = prod.specs ? Object.entries(prod.specs) : [];
+        document.getElementById('tool1Name').value = specsEntries[0]?.[0] || 'Feature 1';
+        document.getElementById('tool1Spec').value = specsEntries[0]?.[1] || prod.desc || '';
+        document.getElementById('tool2Name').value = specsEntries[1]?.[0] || 'Feature 2';
+        document.getElementById('tool2Spec').value = specsEntries[1]?.[1] || '';
+        document.getElementById('tool3Name').value = specsEntries[2]?.[0] || 'Feature 3';
+        document.getElementById('tool3Spec').value = specsEntries[2]?.[1] || '';
+      }
+
+      updateImagePreview();
+      calculateSavings();
+
+      // Scroll smoothly to form
+      document.getElementById('itemForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function resetFormToCreate() {
+      editingId = null;
+      document.getElementById('editItemId').value = '';
+      document.getElementById('editOriginalType').value = '';
+      document.getElementById('cancelEditBtn').classList.add('hidden');
+      document.getElementById('formTitleText').innerText = 'Create New Item';
+      document.getElementById('submitBtnText').innerText = 'Save & Publish to Store';
+      clearForm();
+    }
+
+    function clearForm() {
+      document.getElementById('itemTitle').value = '';
+      document.getElementById('itemSubtitle').value = '';
+      document.getElementById('itemImage').value = '';
+      document.getElementById('itemOriginalPrice').value = '';
+      document.getElementById('itemDiscountedPrice').value = '';
+      document.getElementById('itemBadge').value = '';
+      document.getElementById('tool1Name').value = '';
+      document.getElementById('tool1Spec').value = '';
+      document.getElementById('tool2Name').value = '';
+      document.getElementById('tool2Spec').value = '';
+      document.getElementById('tool3Name').value = '';
+      document.getElementById('tool3Spec').value = '';
+      document.getElementById('itemIsHeroOffer').checked = false;
+      updateImagePreview();
+      calculateSavings();
+    }
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+
+      const type = activeItemType;
+      const category = document.getElementById('itemCategory').value;
+      const title = document.getElementById('itemTitle').value.trim();
+      const subtitle = document.getElementById('itemSubtitle').value.trim();
+      const image = document.getElementById('itemImage').value.trim();
+      const origPrice = parseFloat(document.getElementById('itemOriginalPrice').value);
+      const discPrice = parseFloat(document.getElementById('itemDiscountedPrice').value);
+      const badge = document.getElementById('itemBadge').value.trim();
+      const isHero = document.getElementById('itemIsHeroOffer').checked;
+
+      const t1Name = document.getElementById('tool1Name').value.trim();
+      const t1Spec = document.getElementById('tool1Spec').value.trim();
+      const t2Name = document.getElementById('tool2Name').value.trim();
+      const t2Spec = document.getElementById('tool2Spec').value.trim();
+      const t3Name = document.getElementById('tool3Name').value.trim();
+      const t3Spec = document.getElementById('tool3Spec').value.trim();
+
+      const discPct = Math.max(1, Math.round(((origPrice - discPrice) / origPrice) * 100));
+
+      if (type === 'pack') {
+        // PACK / BUNDLE
+        const packKey = editingId || category; // use category key if creating/editing pack for category
+        const itemsSummary = [t1Name, t2Name, t3Name].filter(Boolean).join(' + ') || '3-Tool Pro Athletic Equipment Bundle';
+
+        const bundledItems = [
+          { num: '1', name: t1Name || 'Pro Tactical Vest', spec: t1Spec || '1000D Cordura Nylon' },
+          { num: '2', name: t2Name || 'Heavy Athletic Gear', spec: t2Spec || 'Impact-Absorbing Steel' },
+          { num: '3', name: t3Name || 'High-Output Accessory', spec: t3Spec || 'Engineered for Performance' }
+        ];
+
+        packsData[packKey] = {
+          id: `pack-${packKey}`,
+          category: category,
+          title: title,
+          subtitle: subtitle || `العرض الأساسي للباقة الرياضية — ${category.toUpperCase()} Master Bundle`,
+          badge: badge || `PRO BUNDLE / PACK · SAVE ${discPct}% · INSTAGRAM EXCLUSIVE`,
+          image: image || '/src/assets/images/fitness_gear_showcase_1794059494749.jpg',
+          itemsSummary: itemsSummary,
+          originalPrice: origPrice,
+          discountedPrice: discPrice,
+          discountPercent: discPct,
+          bundledItems: bundledItems,
+          bullets: [
+            { title: 'Pro-Grade Durability', text: 'Tested in Dakhla’s intense desert conditions and 30-knot ocean winds.' },
+            { title: 'Designed for Maximum Output', text: 'Complete athletic synergy engineered to elevate endurance and functional power.' },
+            { title: 'Cash on Delivery Across Morocco', text: 'Free 24-48h courier shipping with door-to-door tracking. Inspect before paying.' }
+          ],
+          claimedCount: packsData[packKey]?.claimedCount || 40,
+          stockLeft: packsData[packKey]?.stockLeft || 7,
+          reviews: packsData[packKey]?.reviews || 180
+        };
+
+        if (isHero) {
+          heroOfferKey = packKey;
+        }
+
+      } else {
+        // SINGLE PRODUCT
+        const prodId = editingId || `${category}-${Date.now().toString().slice(-4)}`;
+        const specs = {};
+        if (t1Name) specs[t1Name] = t1Spec || 'Pro Grade';
+        if (t2Name) specs[t2Name] = t2Spec || 'Dakhla Tested';
+        if (t3Name) specs[t3Name] = t3Spec || 'High Durability';
+
+        const newProd = {
+          id: prodId,
+          name: title,
+          category: category,
+          tagline: subtitle || 'Engineered for Moroccan endurance athletes',
+          originalPrice: origPrice,
+          discountedPrice: discPrice,
+          discountPercent: discPct,
+          rating: 4.9,
+          reviews: 95,
+          image: image || '/src/assets/images/fitness_gear_showcase_1794059494749.jpg',
+          badge: badge || 'PRO ATHLETE',
+          desc: subtitle || `${title} engineered for maximum durability, comfort, and athletic performance.`,
+          specs: specs
+        };
+
+        const existingIndex = productsData.findIndex(p => p.id === prodId);
+        if (existingIndex >= 0) {
+          productsData[existingIndex] = newProd;
+        } else {
+          productsData.unshift(newProd);
+        }
+
+        if (isHero) {
+          heroOfferKey = prodId;
+        }
+      }
+
+      saveData();
+      resetFormToCreate();
+    }
+
+    function deleteItem(type, id) {
+      if (!confirm(`Are you sure you want to delete this ${type === 'pack' ? 'pro pack' : 'product'}?`)) {
+        return;
+      }
+
+      if (type === 'pack') {
+        const remainingPacks = Object.keys(packsData);
+        if (remainingPacks.length <= 1) {
+          alert('You must have at least one Pro Pack in your store catalog.');
+          return;
+        }
+        delete packsData[id];
+        if (heroOfferKey === id) {
+          heroOfferKey = Object.keys(packsData)[0];
+        }
+      } else {
+        productsData = productsData.filter(p => p.id !== id);
+      }
+
+      saveData();
+      showToast('Item Deleted', `Item was removed from store catalog.`);
+    }
+
+    function confirmResetDefaults() {
+      if (confirm('Reset entire catalog back to DAKHLA FIT factory defaults? Any custom items will be overwritten.')) {
+        packsData = JSON.parse(JSON.stringify(DEFAULT_PACKS));
+        productsData = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+        heroOfferKey = 'fitness';
+        saveData();
+        showToast('Catalog Reset', 'Restored initial 3 pro packs and 15 products.');
+      }
+    }
+
+    function showToast(title, msg) {
+      const toast = document.getElementById('toastNotification');
+      const titleEl = document.getElementById('toastTitle');
+      const msgEl = document.getElementById('toastMessage');
+
+      if (!toast) return;
+      titleEl.innerText = title;
+      msgEl.innerText = msg;
+
+      toast.classList.remove('translate-y-24', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.add('translate-y-24', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 3500);
+    }
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      checkAuth();
+    });
+  </script>
+
+</body>
+</html>
