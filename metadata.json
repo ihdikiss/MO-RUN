@@ -1,0 +1,6 @@
+{
+  "name": "DAKHLA FIT — High-Performance Sports Equipment",
+  "description": "Modern athletic e-commerce storefront for Dakhla Fit featuring 3D interactive typography, swimming, running, and fitness gear with instant WhatsApp ordering in Moroccan Dirhams.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

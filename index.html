@@ -1,0 +1,1269 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>DAKHLA FIT — High-Performance Mobile Storefront</title>
+    <meta name="description" content="100% vertical flat mobile sports storefront for Dakhla Fit. Swimming, running, and gym hardware with instant WhatsApp ordering across Morocco." />
+    <meta property="og:title" content="DAKHLA FIT — High-Performance Mobile Storefront" />
+    <meta property="og:description" content="100% vertical flat mobile sports storefront for Dakhla Fit. Instant WhatsApp ordering across Morocco." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              neon: '#00FF66',
+              neonLime: '#39FF14',
+              darkBg: '#0a0a0a',
+              cardBg: '#121215',
+              cardBorder: 'rgba(255, 255, 255, 0.08)'
+            },
+            fontFamily: {
+              display: ['Outfit', 'sans-serif'],
+              sans: ['Plus Jakarta Sans', 'sans-serif'],
+              mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace']
+            }
+          }
+        }
+      };
+    </script>
+
+    <style>
+      body {
+        background-color: #0a0a0a;
+        color: #f4f4f5;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        -webkit-tap-highlight-color: transparent;
+      }
+      h1, h2, h3, h4, .font-display {
+        font-family: 'Outfit', sans-serif;
+      }
+      /* Pulsing glow animation for high conversion */
+      @keyframes pulseGlow {
+        0%, 100% {
+          box-shadow: 0 0 15px rgba(0, 255, 102, 0.4);
+          transform: scale(1);
+        }
+        50% {
+          box-shadow: 0 0 28px rgba(0, 255, 102, 0.75);
+          transform: scale(1.02);
+        }
+      }
+      .pulse-neon {
+        animation: pulseGlow 2.5s infinite ease-in-out;
+      }
+      /* Safe area padding for iPhones with Home Indicator */
+      .pb-safe {
+        padding-bottom: env(safe-area-inset-bottom, 16px);
+      }
+    </style>
+  </head>
+  <!-- pb-36 ensures 144px bottom padding: sticky bar will NEVER overlap content -->
+  <body class="bg-[#0a0a0a] text-zinc-100 antialiased selection:bg-[#00FF66] selection:text-black min-h-screen flex flex-col pb-36">
+
+    <!-- 1. TOP ANNOUNCEMENT STRIP -->
+    <div class="bg-[#00FF66]/10 border-b border-[#00FF66]/20 px-4 py-1.5 text-center">
+      <p class="text-[11px] font-mono font-bold tracking-wide text-[#00FF66] flex items-center justify-center gap-1.5">
+        <span>⚡</span>
+        <span>SPRING DROP: UP TO -34% OFF · CASH ON DELIVERY IN MOROCCO 🇲🇦</span>
+      </p>
+    </div>
+
+    <!-- 2. COMPACT TOP HEADER -->
+    <header class="sticky top-0 z-40 w-full bg-[#0a0a0a]/95 backdrop-blur-md border-b border-white/10 px-4 h-14 flex items-center justify-between">
+      <a href="#" onclick="filterCategory('all'); window.scrollTo({top: 0, behavior: 'smooth'}); return false;" class="flex items-center gap-1.5 font-display font-black text-xl tracking-tight text-white">
+        <span>DAKHLA</span>
+        <span class="text-[#00FF66]">FIT</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-[#00FF66] shadow-[0_0_8px_#00FF66]"></span>
+      </a>
+
+      <!-- Quick Trust Tag & WhatsApp Trigger -->
+      <div class="flex items-center gap-2">
+        <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-[#00FF66]/10 text-[#00FF66] border border-[#00FF66]/30 flex items-center gap-1">
+          <span>🇲🇦</span>
+          <span>Cash on Delivery</span>
+        </span>
+        <a href="https://wa.me/212600112233?text=Salam%20Dakhla%20Fit!%20I%20would%20like%20to%20order%20from%20your%20catalog." target="_blank" class="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-[#00FF66] transition-colors" aria-label="WhatsApp">
+          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.275.072.376-.044c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-10.416c-4.415 0-8 3.585-8 8 0 1.411.367 2.738 1.008 3.891l-1.07 3.916 4.025-1.056c1.11.603 2.38 0.949 3.737.949 4.415 0 8-3.585 8-8s-3.585-8-8-8z"/></svg>
+        </a>
+      </div>
+    </header>
+
+    <!-- 3. CRO HERO PACK CENTERPIECE: THE ULTIMATE SPORTS PACK (Above the Fold) -->
+    <section class="relative w-full pt-4 pb-6 px-4 bg-[#0a0a0a] overflow-hidden border-b border-white/10">
+      <canvas id="hero-particles" class="absolute inset-0 w-full h-full pointer-events-none z-0"></canvas>
+
+      <div class="relative z-10 max-w-xl mx-auto space-y-3.5">
+        
+        <!-- Instagram Urgency Banner -->
+        <div class="flex items-center justify-between gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-[#00FF66]/20 via-white/[0.04] to-[#00FF66]/20 border border-[#00FF66]/40 text-[11px] font-mono text-zinc-300 shadow-[0_0_15px_rgba(0,255,102,0.15)]">
+          <div class="flex items-center gap-1.5 truncate">
+            <span class="w-2 h-2 rounded-full bg-[#00FF66] animate-ping"></span>
+            <span class="font-black text-white">INSTAGRAM REELS EXCLUSIVE</span>
+            <span class="text-zinc-500 hidden sm:inline">·</span>
+            <span class="text-[#00FF66] font-bold truncate">العرض الأساسي للباقة الرياضية</span>
+          </div>
+          <span class="shrink-0 text-[10px] font-black text-black bg-[#00FF66] px-2 py-0.5 rounded-full shadow-sm">
+            UP TO -41%
+          </span>
+        </div>
+
+        <!-- Section Title & Headline -->
+        <div class="text-center space-y-1">
+          <h1 class="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-white uppercase font-display leading-tight">
+            THE ULTIMATE <span class="text-[#00FF66] relative inline-block">SPORTS PACK<span class="absolute -bottom-1 left-0 right-0 h-1 bg-[#00FF66] rounded-full shadow-[0_0_12px_#00FF66]"></span></span>
+          </h1>
+          <p class="text-xs sm:text-sm text-zinc-400 font-sans max-w-md mx-auto">
+            3 pro-grade athletic tools bundled in 1 high-output package. Tested in 30-knot Dakhla ocean winds and Sahara sands.
+          </p>
+        </div>
+
+        <!-- Sub-Headline: Explicitly Clarifying Complete Sports Pack Selection -->
+        <div class="bg-gradient-to-r from-[#141418] via-[#1a1a24] to-[#141418] border border-[#00FF66]/30 rounded-2xl p-3 text-center sm:text-left flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 shadow-[0_0_20px_rgba(0,255,102,0.12)]">
+          <div class="flex items-center justify-center sm:justify-start gap-2.5">
+            <span class="text-xl text-[#00FF66] animate-pulse">⚡</span>
+            <div>
+              <div class="text-xs sm:text-sm font-black text-white font-sans tracking-wide">
+                اختر باقتك الرياضية المتكاملة <span class="text-[#00FF66] font-mono text-xs font-bold">(Select Your Complete Sport Pack)</span>
+              </div>
+              <div class="text-[11px] text-zinc-400 font-mono">
+                CHOOSE YOUR SPORT PACK · 3-IN-1 PRO BUNDLES (NOT SINGLE ITEMS)
+              </div>
+            </div>
+          </div>
+          <span class="self-center sm:self-auto inline-flex items-center gap-1 text-[10px] font-mono font-black text-black bg-[#00FF66] px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
+            <span>📦</span> COMPLETE BUNDLES
+          </span>
+        </div>
+
+        <!-- Pack Discipline Switcher Tabs (Home Fitness Pack, Running Pack, Swimming Pack) -->
+        <div class="grid grid-cols-3 gap-2 p-1.5 bg-[#141418] border border-white/10 rounded-2xl">
+          <button type="button" onclick="switchHeroPack('fitness')" id="pack-tab-fitness" class="pack-tab-btn py-2.5 px-1.5 text-center rounded-xl text-xs font-bold transition-all flex flex-col items-center justify-center gap-1 bg-[#00FF66] text-black shadow-[0_0_15px_rgba(0,255,102,0.45)] cursor-pointer ring-1 ring-[#00FF66]">
+            <span class="text-lg pointer-events-none">🏋️‍♂️</span>
+            <span class="leading-tight font-display font-black pointer-events-none text-xs">Fitness Pack</span>
+            <span class="text-[9px] font-mono font-black uppercase opacity-90 pointer-events-none bg-black/15 px-1.5 py-0.2 rounded">3-in-1 Bundle</span>
+          </button>
+          <button type="button" onclick="switchHeroPack('running')" id="pack-tab-running" class="pack-tab-btn py-2.5 px-1.5 text-center rounded-xl text-xs font-bold transition-all flex flex-col items-center justify-center gap-1 text-zinc-400 hover:text-white bg-transparent hover:bg-white/5 cursor-pointer">
+            <span class="text-lg pointer-events-none">🏃‍♂️</span>
+            <span class="leading-tight font-display font-black pointer-events-none text-xs">Running Pack</span>
+            <span class="text-[9px] font-mono font-bold uppercase text-zinc-500 pointer-events-none">3-in-1 Bundle</span>
+          </button>
+          <button type="button" onclick="switchHeroPack('swimming')" id="pack-tab-swimming" class="pack-tab-btn py-2.5 px-1.5 text-center rounded-xl text-xs font-bold transition-all flex flex-col items-center justify-center gap-1 text-zinc-400 hover:text-white bg-transparent hover:bg-white/5 cursor-pointer">
+            <span class="text-lg pointer-events-none">🏊‍♂️</span>
+            <span class="leading-tight font-display font-black pointer-events-none text-xs">Swimming Pack</span>
+            <span class="text-[9px] font-mono font-bold uppercase text-zinc-500 pointer-events-none">3-in-1 Bundle</span>
+          </button>
+        </div>
+
+        <!-- THE MAIN HERO PACK CARD CONTAINER -->
+        <div id="heroPackCardContainer">
+          <!-- Rendered dynamically by renderHeroPack(activePackKey) -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 4. INDIVIDUAL GEAR CATALOG SECTION HEADER -->
+    <section class="max-w-xl mx-auto w-full px-4 pt-5 pb-1">
+      <div class="flex items-center justify-between text-[11px] font-mono uppercase text-zinc-400 mb-2">
+        <span class="text-white font-bold tracking-wide">OR BUY SINGLE ATHLETIC TOOLS</span>
+        <button type="button" data-category="all" id="cat-all" onclick="selectCategory('all')" class="category-btn category-card text-[#00FF66] underline font-bold cursor-pointer transition-all">
+          Show All (15)
+        </button>
+      </div>
+
+      <!-- Clean 3-Column Fixed Grid for Individual Gear Filter -->
+      <div class="grid grid-cols-3 gap-2 w-full">
+        <button type="button" data-category="swimming" id="cat-swimming" onclick="selectCategory('swimming')" class="category-btn category-card cat-grid-btn p-2.5 rounded-2xl bg-[#141418] border border-white/10 hover:border-[#00FF66]/60 transition-all flex flex-col items-center justify-center gap-1 text-center cursor-pointer active:scale-95 text-white">
+          <span class="text-xl pointer-events-none">🏊‍♂️</span>
+          <span class="text-xs font-bold leading-tight font-display pointer-events-none">Swimming</span>
+          <span class="text-[9px] font-mono text-zinc-400 pointer-events-none">5 items</span>
+        </button>
+
+        <button type="button" data-category="running" id="cat-running" onclick="selectCategory('running')" class="category-btn category-card cat-grid-btn p-2.5 rounded-2xl bg-[#141418] border border-white/10 hover:border-[#00FF66]/60 transition-all flex flex-col items-center justify-center gap-1 text-center cursor-pointer active:scale-95 text-white">
+          <span class="text-xl pointer-events-none">🏃‍♂️</span>
+          <span class="text-xs font-bold leading-tight font-display pointer-events-none">Running</span>
+          <span class="text-[9px] font-mono text-zinc-400 pointer-events-none">5 items</span>
+        </button>
+
+        <button type="button" data-category="fitness" id="cat-fitness" onclick="selectCategory('fitness')" class="category-btn category-card cat-grid-btn p-2.5 rounded-2xl bg-[#141418] border border-white/10 hover:border-[#00FF66]/60 transition-all flex flex-col items-center justify-center gap-1 text-center cursor-pointer active:scale-95 text-white">
+          <span class="text-xl pointer-events-none">🏋️‍♂️</span>
+          <span class="text-xs font-bold leading-tight font-display pointer-events-none">Fitness</span>
+          <span class="text-[9px] font-mono text-zinc-400 pointer-events-none">5 items</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 6. COMPACT SEARCH & SORT BAR -->
+    <div class="max-w-xl mx-auto w-full px-4 pt-3 pb-2 flex items-center gap-2">
+      <div class="relative flex-1">
+        <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Search gear (goggles, dumbbells, chalk)..." class="w-full pl-8 pr-3 py-2 text-xs font-sans bg-[#121215] border border-white/10 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-[#00FF66]" />
+        <svg class="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-1/2 -translate-y-1/2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      </div>
+
+      <select id="sortSelect" onchange="handleSort(this.value)" class="shrink-0 px-2.5 py-2 text-xs font-mono font-semibold bg-[#121215] border border-white/10 rounded-xl text-zinc-300 focus:outline-none focus:border-[#00FF66]">
+        <option value="discount">Biggest Discount</option>
+        <option value="price-asc">Price: Low to High</option>
+        <option value="price-desc">Price: High to Low</option>
+        <option value="rating">Top Rated</option>
+      </select>
+    </div>
+
+    <!-- 7. FULL VERTICAL PRODUCT FEED -->
+    <main class="max-w-xl mx-auto w-full px-4 py-2 flex-1">
+      <div class="flex items-center justify-between text-xs font-mono text-zinc-400 mb-3 px-1">
+        <span id="resultsCount">Showing all athletic items</span>
+        <span class="text-[#00FF66] font-semibold">100% In Stock</span>
+      </div>
+
+      <!-- Vertical Flat Architecture: Clean single-column on mobile, expanding cleanly on larger viewports -->
+      <div id="productsGrid" class="space-y-4">
+        <!-- Rendered via JS -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="emptyState" class="hidden py-10 text-center p-6 bg-[#121215] border border-white/10 rounded-2xl max-w-sm mx-auto my-4">
+        <span class="text-3xl mb-2 block">🔍</span>
+        <h3 class="text-sm font-bold text-white mb-1">No products found</h3>
+        <p class="text-xs text-zinc-400 font-mono mb-4">Try searching another term or tap show all.</p>
+        <button onclick="resetFilters()" class="px-4 py-2 bg-[#00FF66] text-black font-bold text-xs rounded-xl">
+          Show All Gear
+        </button>
+      </div>
+    </main>
+
+    <!-- 8. INSTAGRAM TRUST CARDS -->
+    <section class="max-w-xl mx-auto w-full px-4 py-6 border-t border-white/10 mt-4">
+      <div class="bg-[#121215] border border-white/10 rounded-2xl p-4 text-center space-y-2.5">
+        <span class="text-[11px] font-mono font-bold text-[#00FF66] uppercase tracking-wider block">
+          COMMITTED TO MOROCCAN ATHLETES
+        </span>
+        <h3 class="text-base font-black text-white font-display">
+          TESTED IN DAKHLA EXTREMES · ZERO DEFECTS
+        </h3>
+        <div class="grid grid-cols-3 gap-2 pt-1 font-mono text-[11px]">
+          <div class="p-2 rounded-xl bg-white/[0.02] border border-white/5">
+            <span class="block text-base mb-1">📦</span>
+            <span class="text-zinc-200 font-bold block">Cash on Delivery</span>
+            <span class="text-zinc-500 text-[9px]">Inspect first</span>
+          </div>
+          <div class="p-2 rounded-xl bg-white/[0.02] border border-white/5">
+            <span class="block text-base mb-1">🚚</span>
+            <span class="text-zinc-200 font-bold block">24-48h Delivery</span>
+            <span class="text-zinc-500 text-[9px]">All 12 regions</span>
+          </div>
+          <div class="p-2 rounded-xl bg-white/[0.02] border border-white/5">
+            <span class="block text-base mb-1">💬</span>
+            <span class="text-zinc-200 font-bold block">Direct Hotline</span>
+            <span class="text-zinc-500 text-[9px]">Reply &lt; 5 min</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. FOOTER -->
+    <footer class="max-w-xl mx-auto w-full px-4 pt-4 text-center text-zinc-500 font-mono text-xs space-y-1.5">
+      <p>© 2026 DAKHLA FIT. Engineered for Moroccan Endurance.</p>
+      <p>Avenue Al Oula, Dakhla Lagoon, Morocco 🇲🇦</p>
+    </footer>
+
+    <!-- 10. PRODUCT DETAIL BOTTOM SHEET MODAL -->
+    <div id="quickViewModal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-sm" onclick="if(event.target===this) closeQuickView();">
+      <div class="relative w-full sm:max-w-md bg-[#141418] border-t sm:border border-white/15 rounded-t-3xl sm:rounded-3xl overflow-hidden shadow-2xl max-h-[85vh] flex flex-col animate-in slide-in-from-bottom duration-200">
+        <div class="w-10 h-1.5 bg-zinc-600 rounded-full mx-auto my-3 sm:hidden"></div>
+        <button onclick="closeQuickView()" class="absolute top-3 right-4 z-20 p-2 rounded-full bg-black/60 text-zinc-400 hover:text-white" aria-label="Close">
+          ✕
+        </button>
+        <div class="overflow-y-auto p-5 space-y-4" id="modalContent"></div>
+      </div>
+    </div>
+
+    <!-- 11. STICKY BOTTOM "ORDER VIA WHATSAPP" BAR (Fixed on screen with 144px body clearance) -->
+    <div class="fixed bottom-0 left-0 right-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-md border-t border-white/15 px-4 py-2.5 pb-safe flex items-center justify-between gap-3 shadow-2xl">
+      <div class="flex items-center gap-2">
+        <span class="relative flex h-3 w-3">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00FF66] opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-3 w-3 bg-[#00FF66]"></span>
+        </span>
+        <div class="leading-tight">
+          <span class="text-xs font-bold text-white block">WhatsApp Express</span>
+          <span class="text-[10px] font-mono text-zinc-400">Online · Reply &lt; 5m</span>
+        </div>
+      </div>
+
+      <a id="stickyWaBtn" href="https://wa.me/212600112233" target="_blank" rel="noopener noreferrer" class="pulse-neon px-5 py-3 bg-[#00FF66] hover:bg-[#00e65c] text-black font-black text-xs sm:text-sm rounded-xl flex items-center gap-2 transition-all shrink-0 shadow-[0_0_15px_rgba(0,255,102,0.4)]">
+        <svg class="w-4 h-4 fill-black" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.275.072.376-.044c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-10.416c-4.415 0-8 3.585-8 8 0 1.411.367 2.738 1.008 3.891l-1.07 3.916 4.025-1.056c1.11.603 2.38 0.949 3.737.949 4.415 0 8-3.585 8-8s-3.585-8-8-8z"/></svg>
+        <span id="stickyWaBtnText">Order Pack via WhatsApp · 799 MAD</span>
+      </a>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- 12. STORE & PARTICLE LOGIC -->
+    <!-- ===================================================================== -->
+    <script>
+      const PRODUCTS = [
+        // SWIMMING
+        {
+          id: 'swim-1',
+          name: 'HydroPro Carbon Mirrored Goggles',
+          category: 'swimming',
+          tagline: 'Competition hydrodynamic racing goggles with polarized mirror',
+          originalPrice: 499,
+          discountedPrice: 349,
+          discountPercent: 30,
+          rating: 4.9,
+          reviews: 142,
+          image: '/src/assets/images/swimming_gear_showcase_1794059493816.jpg',
+          badge: 'BESTSELLER',
+          desc: 'Anti-fog mirrored curved lenses with UV400 defense and leakproof Japanese silicone seal. Cuts ocean glare and lagoon reflection.',
+          specs: { 'Lens': 'UV400 Polarized', 'Gasket': '100% Silicone', 'Field': '180° Panoramic' }
+        },
+        {
+          id: 'swim-2',
+          name: 'LagoonShield Thermal Neoprene Cap 3mm',
+          category: 'swimming',
+          tagline: 'Thermal barrier engineered for cold Atlantic swells & lagoon winds',
+          originalPrice: 320,
+          discountedPrice: 229,
+          discountPercent: 28,
+          rating: 4.8,
+          reviews: 86,
+          image: '/src/assets/images/swimming_gear_showcase_1794059493816.jpg',
+          badge: 'COLD WATER',
+          desc: 'Essential head protection when training in Dakhla’s Atlantic swells where water temperature drops and high winds increase windchill.',
+          specs: { 'Thickness': '3.0mm Yamamoto', 'Seams': 'Blind-Stitched GBS', 'Temp': '12°C - 19°C' }
+        },
+        {
+          id: 'swim-3',
+          name: 'AeroFin Dual-Density Silicone Fins',
+          category: 'swimming',
+          tagline: 'Short-blade propulsive fins for cadence and ankle power',
+          originalPrice: 580,
+          discountedPrice: 399,
+          discountPercent: 31,
+          rating: 4.9,
+          reviews: 97,
+          image: '/src/assets/images/swimming_gear_showcase_1794059493816.jpg',
+          badge: 'PRO TRAINING',
+          desc: 'Short angled silicone blade reinforces flutter kick tempo without cramping. 100% natural soft silicone.',
+          specs: { 'Material': 'Natural Silicone', 'Angle': '15° Forward', 'Weight': '620g' }
+        },
+        {
+          id: 'swim-4',
+          name: 'Atlantic Storm 30L DryBag & Tow Float',
+          category: 'swimming',
+          tagline: 'Dual-chamber high-buoyancy drypack & safety swim buoy',
+          originalPrice: 390,
+          discountedPrice: 269,
+          discountPercent: 31,
+          rating: 4.7,
+          reviews: 64,
+          image: '/src/assets/images/swimming_gear_showcase_1794059493816.jpg',
+          badge: 'SAFETY BUOY',
+          desc: 'Keep phone and keys dry while floating as an ultra-visible beacon in ocean waters. Over 120kg buoyant emergency support.',
+          specs: { 'Capacity': '30 Liters', 'Rating': 'IPX8 Waterproof', 'Buoyancy': '> 180N' }
+        },
+        {
+          id: 'swim-5',
+          name: 'ContourHydro Ergonomic EVA Pull Buoy',
+          category: 'swimming',
+          tagline: 'Asymmetric flotation block for focused upper-body stroke power',
+          originalPrice: 220,
+          discountedPrice: 159,
+          discountPercent: 28,
+          rating: 4.8,
+          reviews: 52,
+          image: '/src/assets/images/swimming_gear_showcase_1794059493816.jpg',
+          badge: 'CORE POWER',
+          desc: 'Isolates leg kicking to force the core and shoulders into pure propulsion. Contoured curved profile prevents chafing.',
+          specs: { 'Dimensions': '23cm x 12.5cm', 'Material': 'Closed-cell EVA', 'Water Absorp': '0%' }
+        },
+        // RUNNING
+        {
+          id: 'run-1',
+          name: 'TrailFlow Carbon Ultra Hydration Vest (12L)',
+          category: 'running',
+          tagline: 'Zero-bounce endurance race pack with dual 500ml carbon soft flasks',
+          originalPrice: 890,
+          discountedPrice: 599,
+          discountPercent: 33,
+          rating: 5.0,
+          reviews: 215,
+          image: '/src/assets/images/running_gear_showcase_1794059494553.jpg',
+          badge: 'TOP SELLER',
+          desc: 'Engineered for desert ultras and coastal trail endurance. Crafted with hyper-breathable honeycomb 3D mesh.',
+          specs: { 'Capacity': '12 Liters', 'Weight': '195g Ultralight', 'Flasks': '2x 500ml Included' }
+        },
+        {
+          id: 'run-2',
+          name: 'Dakhla DuneShield Aerodynamic Sunglasses',
+          category: 'running',
+          tagline: 'Ultralight frameless eyewear with anti-glare hydrophobic coating',
+          originalPrice: 450,
+          discountedPrice: 299,
+          discountPercent: 34,
+          rating: 4.9,
+          reviews: 118,
+          image: '/src/assets/images/running_gear_showcase_1794059494553.jpg',
+          badge: 'WIND & SAND',
+          desc: 'Custom-built for the high winds and intense solar glare of Dakhla. Weighing only 26 grams with anti-slip rubber.',
+          specs: { 'Weight': '26 grams', 'Lens': 'Cat 3 Polarized', 'UV Protection': 'UV400 100%' }
+        },
+        {
+          id: 'run-3',
+          name: 'NightPulse High-Vis Neon LED Armbands',
+          category: 'running',
+          tagline: 'USB-C rechargeable weatherproof glowing pulse band pair',
+          originalPrice: 210,
+          discountedPrice: 139,
+          discountPercent: 34,
+          rating: 4.8,
+          reviews: 78,
+          image: '/src/assets/images/running_gear_showcase_1794059494553.jpg',
+          badge: 'NIGHT RUN',
+          desc: 'Delivers 360-degree visibility visible from over 500m in complete darkness with 10 hours runtime per charge.',
+          specs: { 'Battery': '8-10 Hours', 'Charging': 'USB-C Fast', 'Pack': '2 Armbands' }
+        },
+        {
+          id: 'run-4',
+          name: 'AeroGrip Anti-Blister Trail Gaiters',
+          category: 'running',
+          tagline: 'Protective ankle shield against sand, scree, and desert debris',
+          originalPrice: 260,
+          discountedPrice: 179,
+          discountPercent: 31,
+          rating: 4.7,
+          reviews: 54,
+          image: '/src/assets/images/running_gear_showcase_1794059494553.jpg',
+          badge: 'DESERT READY',
+          desc: 'Prevents sand grains and gravel from entering shoe collars on coastal dunes and unpaved trails.',
+          specs: { 'Fabric': 'Nylon Cordura', 'Strap': 'Hypalon Rubber', 'Closure': 'Rear Velcro' }
+        },
+        {
+          id: 'run-5',
+          name: 'SpeedFlow 500ml Carbon Soft Flask',
+          category: 'running',
+          tagline: 'Collapsible TPU hydration flask that compresses as you drink',
+          originalPrice: 180,
+          discountedPrice: 119,
+          discountPercent: 34,
+          rating: 4.9,
+          reviews: 89,
+          image: '/src/assets/images/running_gear_showcase_1794059494553.jpg',
+          badge: 'ESSENTIAL',
+          desc: 'Zero liquid sloshing, 42mm wide-mouth cap for ice cubes & powders. Food-grade BPA/PVC free TPU.',
+          specs: { 'Volume': '500 ml', 'Weight': '38 grams', 'Valve': 'Silicone Bite' }
+        },
+        // FITNESS
+        {
+          id: 'fit-1',
+          name: 'HexCore Knurled Cast Iron Dumbbells',
+          category: 'fitness',
+          tagline: 'Commercial anti-roll rubber hex dumbbells with deep knurling (Pair)',
+          originalPrice: 950,
+          discountedPrice: 689,
+          discountPercent: 27,
+          rating: 5.0,
+          reviews: 167,
+          image: '/src/assets/images/fitness_gear_showcase_1794059494749.jpg',
+          badge: 'GYM TOP PICK',
+          desc: 'Solid cast-iron heads welded to hardened chrome handles with diamond knurling, encased in floor-shielding rubber.',
+          specs: { 'Core': 'Cast Iron + Steel', 'Coating': 'Virgin Rubber', 'Grip': '28mm Knurled' }
+        },
+        {
+          id: 'fit-2',
+          name: 'PowerFlex 5-Level Heavy Resistance Bands',
+          category: 'fitness',
+          tagline: '100% natural layered latex continuous loop resistance set',
+          originalPrice: 420,
+          discountedPrice: 289,
+          discountPercent: 31,
+          rating: 4.9,
+          reviews: 230,
+          image: '/src/assets/images/fitness_gear_showcase_1794059494749.jpg',
+          badge: 'BEST VALUE',
+          desc: '5 resistance levels from 5kg to 65kg. Includes reinforced door anchor, travel pouch, and exercise guide.',
+          specs: { 'Material': 'Layered Latex', 'Range': '10-150 lbs combined', 'Length': '208 cm' }
+        },
+        {
+          id: 'fit-3',
+          name: 'AeroSpeed High-RPM 360° Speed Rope',
+          category: 'fitness',
+          tagline: 'Competition double-under speed rope with aluminum knurled grips',
+          originalPrice: 280,
+          discountedPrice: 189,
+          discountPercent: 33,
+          rating: 4.9,
+          reviews: 144,
+          image: '/src/assets/images/fitness_gear_showcase_1794059494749.jpg',
+          badge: 'CROSS TRAINING',
+          desc: 'Dual high-precision ABEC-9 bearings deliver 6+ revolutions per second for effortless double-unders.',
+          specs: { 'Handle': 'Billet Aluminum', 'Cable': '2.5mm Coated Steel', 'Length': '300cm Adjust' }
+        },
+        {
+          id: 'fit-4',
+          name: 'TitanGrip Pure Athletic Liquid Chalk (250ml)',
+          category: 'fitness',
+          tagline: 'Fast-drying magnesium carbonate with anti-bacterial resin formula',
+          originalPrice: 150,
+          discountedPrice: 99,
+          discountPercent: 34,
+          rating: 4.8,
+          reviews: 92,
+          image: '/src/assets/images/fitness_gear_showcase_1794059494749.jpg',
+          badge: 'ZERO DUST',
+          desc: 'Dries in 15 seconds into an impenetrable friction armor that repels sweat during deadlifts and pull-ups.',
+          specs: { 'Volume': '250 ml', 'Formula': 'Magnesium Carbonate', 'Dry Time': '15-20s' }
+        },
+        {
+          id: 'fit-5',
+          name: 'Tactical 10KG Modular Weight Vest',
+          category: 'fitness',
+          tagline: 'Military-grade 1000D Cordura vest with contoured steel plates',
+          originalPrice: 1100,
+          discountedPrice: 799,
+          discountPercent: 27,
+          rating: 5.0,
+          reviews: 73,
+          image: '/src/assets/images/fitness_gear_showcase_1794059494749.jpg',
+          badge: 'HEAVY DUTY',
+          desc: 'Constructed from ballistic 1000D Cordura nylon with padded yoke shoulder straps that distribute plate weight evenly.',
+          specs: { 'Weight': '10 kg Total', 'Fabric': '1000D Cordura', 'Plates': 'Laser-cut Steel' }
+        }
+      ];
+
+      // =====================================================================
+      // THE ULTIMATE SPORTS PACK (العرض الأساسي للباقة الرياضية)
+      // Categorized bundles for Home Fitness, Running, and Swimming
+      // =====================================================================
+      const PACKS = {
+        fitness: {
+          id: 'pack-fitness',
+          category: 'fitness',
+          title: 'THE ULTIMATE DAKHLA FITNESS PACK',
+          subtitle: 'العرض الأساسي للباقة الرياضية — Home Fitness & Calisthenics Master Bundle',
+          badge: 'PRO BUNDLE / PACK · SAVE 38% · INSTAGRAM EXCLUSIVE',
+          image: '/src/assets/images/fitness_gear_showcase_1794059494749.jpg',
+          itemsSummary: '10kg Tactical Weight Vest + Hex Dumbbells Pair + Suspension Straps',
+          originalPrice: 1290,
+          discountedPrice: 799,
+          discountPercent: 38,
+          bundledItems: [
+            { num: '1', name: '10kg Tactical Weight Vest', spec: 'Laser-Cut Steel Plates + 1000D Ballistic Cordura Nylon' },
+            { num: '2', name: 'Hex Rubber Dumbbells (Pair)', spec: 'Anti-Roll Hex Shape + Knurled Chrome Grip' },
+            { num: '3', name: 'Heavy-Duty Suspension Straps', spec: 'Door & Bar Anchor System + Military-Grade Carabiners' }
+          ],
+          bullets: [
+            { title: 'Pro-Grade Durability', text: 'Ballistic 1000D Cordura nylon with laser-cut steel plates tested for high-reps, sweat, and Sahara grit.' },
+            { title: 'Designed for Maximum Output', text: 'Complete 3-tool synergy to build functional strength, core stability, and explosive power at home.' },
+            { title: 'Cash on Delivery Across Morocco', text: 'Free 24-48h express delivery. Open, inspect, and verify your pack before paying at your door.' }
+          ],
+          claimedCount: 42,
+          stockLeft: 8,
+          reviews: 248
+        },
+        running: {
+          id: 'pack-running',
+          category: 'running',
+          title: 'THE ULTIMATE DAKHLA RUNNING PACK',
+          subtitle: 'العرض الأساسي للباقة الرياضية — Ultra Running & Desert Trail Endurance Pack',
+          badge: 'PRO BUNDLE / PACK · SAVE 39% · INSTAGRAM EXCLUSIVE',
+          image: '/src/assets/images/running_gear_showcase_1794059494553.jpg',
+          itemsSummary: 'TrailFlow Carbon 12L Vest + DuneShield Polarized Eyewear + NightPulse LED Bands',
+          originalPrice: 1220,
+          discountedPrice: 749,
+          discountPercent: 39,
+          bundledItems: [
+            { num: '1', name: 'TrailFlow Carbon 12L Hydration Vest', spec: 'Zero-Bounce Ergonomic Fit + Dual 500ml Soft Flasks' },
+            { num: '2', name: 'DuneShield Polarized Anti-Sand Eyewear', spec: 'Hydrophobic UV400 Wrap-Around Lenses' },
+            { num: '3', name: 'NightPulse High-Visibility LED Bands', spec: 'USB-C Rechargeable Strobe Armbands for Night Runs' }
+          ],
+          bullets: [
+            { title: 'Pro-Grade Durability', text: 'Anti-sand hydrophobic optics and honeycomb 3D breathable mesh built for coastal trails and 30-knot winds.' },
+            { title: 'Designed for Maximum Output', text: 'Zero-bounce anatomical pack with dual 500ml flasks engineered for 40km+ desert ultramarathon endurance.' },
+            { title: 'Cash on Delivery Across Morocco', text: 'Free 24-48h courier shipping across all 12 regions in Morocco with door-to-door tracking.' }
+          ],
+          claimedCount: 38,
+          stockLeft: 12,
+          reviews: 195
+        },
+        swimming: {
+          id: 'pack-swimming',
+          category: 'swimming',
+          title: 'THE ULTIMATE DAKHLA SWIMMING PACK',
+          subtitle: 'العرض الأساسي للباقة الرياضية — Atlantic Ocean & Lagoon Open-Water Bundle',
+          badge: 'PRO BUNDLE / PACK · SAVE 41% · INSTAGRAM EXCLUSIVE',
+          image: '/src/assets/images/swimming_gear_showcase_1794059493816.jpg',
+          itemsSummary: 'HydroPro Polarized Goggles + LagoonShield 3mm Cap + 30L Safety Tow Float',
+          originalPrice: 1180,
+          discountedPrice: 699,
+          discountPercent: 41,
+          bundledItems: [
+            { num: '1', name: 'HydroPro Polarized Open-Water Goggles', spec: '180° Panoramic UV400 Anti-Glare Ocean Lenses' },
+            { num: '2', name: 'LagoonShield 3mm Yamamoto Neoprene Cap', spec: 'Cold-Water Atlantic Thermal Insulation & Chin Strap' },
+            { num: '3', name: 'Safety Ocean 30L Waterproof Tow Float', spec: '180N Buoyant Drybag + Integrated Rescue Whistle' }
+          ],
+          bullets: [
+            { title: 'Pro-Grade Durability', text: '100% Japanese soft silicone and blind-stitched Yamamoto neoprene resistant against Atlantic salt and rocks.' },
+            { title: 'Designed for Maximum Output', text: 'UV400 anti-glare curved lenses cut ocean reflections, while 180N buoyant drybag keeps essentials 100% dry.' },
+            { title: 'Cash on Delivery Across Morocco', text: 'Direct courier delivery in 24-48h. Pay with cash only after inspecting your equipment.' }
+          ],
+          claimedCount: 45,
+          stockLeft: 5,
+          reviews: 168
+        }
+      };
+
+      let activePackKey = 'fitness';
+      let currentCategory = 'all';
+      let searchQuery = '';
+      let sortBy = 'discount';
+      let activeProduct = null;
+      let modalQty = 1;
+
+      // Render product cards (100% Vertical Flat Architecture)
+      function renderProducts() {
+        const grid = document.getElementById('productsGrid');
+        const emptyState = document.getElementById('emptyState');
+        const countLabel = document.getElementById('resultsCount');
+
+        let list = [...PRODUCTS];
+
+        if (currentCategory !== 'all') {
+          list = list.filter(p => p.category === currentCategory);
+        }
+
+        if (searchQuery.trim()) {
+          const q = searchQuery.toLowerCase().trim();
+          list = list.filter(p => p.name.toLowerCase().includes(q) || p.tagline.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
+        }
+
+        if (sortBy === 'discount') list.sort((a,b) => b.discountPercent - a.discountPercent);
+        else if (sortBy === 'price-asc') list.sort((a,b) => a.discountedPrice - b.discountedPrice);
+        else if (sortBy === 'price-desc') list.sort((a,b) => b.discountedPrice - a.discountedPrice);
+        else if (sortBy === 'rating') list.sort((a,b) => b.rating - a.rating);
+
+        if (countLabel) {
+          countLabel.innerText = `Showing ${list.length} items (${currentCategory === 'all' ? 'All Disciplines' : currentCategory.toUpperCase()})`;
+        }
+
+        if (list.length === 0) {
+          grid.innerHTML = '';
+          emptyState.classList.remove('hidden');
+          return;
+        }
+
+        emptyState.classList.add('hidden');
+        grid.innerHTML = list.map(p => {
+          const savings = p.originalPrice - p.discountedPrice;
+          const waUrl = getDirectWhatsAppUrl(p);
+
+          return `
+            <div class="product-card category-${p.category} relative bg-[#121215] border border-white/10 hover:border-[#00FF66]/50 rounded-2xl overflow-hidden p-3.5 transition-all duration-200 flex flex-col sm:flex-row gap-3.5 items-stretch sm:items-center justify-between" data-category="${p.category}">
+              <!-- Left image with badges -->
+              <div onclick="openQuickView('${p.id}')" class="relative w-full sm:w-36 aspect-[4/3] sm:aspect-square rounded-xl overflow-hidden bg-[#161619] cursor-pointer shrink-0">
+                <img src="${p.image}" alt="${p.name}" loading="lazy" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=800&auto=format&fit=crop'" />
+                <div class="absolute top-2 left-2 flex items-center gap-1">
+                  <span class="px-2 py-0.5 bg-[#00FF66] text-black text-[10px] font-black rounded font-mono">
+                    -${p.discountPercent}%
+                  </span>
+                  <span class="px-1.5 py-0.5 bg-black/80 text-zinc-300 text-[9px] font-mono uppercase rounded">
+                    ${p.badge}
+                  </span>
+                </div>
+              </div>
+
+              <!-- Middle info -->
+              <div class="flex-1 min-w-0 space-y-1">
+                <div class="flex items-center gap-2 text-xs font-mono text-zinc-400">
+                  <span class="text-[#00FF66] font-bold uppercase">${p.category}</span>
+                  <span>·</span>
+                  <span class="font-bold text-zinc-300">★ ${p.rating}</span>
+                </div>
+
+                <h3 onclick="openQuickView('${p.id}')" class="text-sm sm:text-base font-bold text-white leading-snug cursor-pointer line-clamp-1 font-display">
+                  ${p.name}
+                </h3>
+
+                <p class="text-xs text-zinc-400 line-clamp-1 leading-relaxed">
+                  ${p.tagline}
+                </p>
+
+                <div class="flex items-baseline gap-2 pt-0.5">
+                  <span class="text-lg font-black text-[#00FF66] font-display">
+                    ${p.discountedPrice} <span class="text-xs text-white font-mono">MAD</span>
+                  </span>
+                  <span class="text-xs text-zinc-500 font-mono line-through">
+                    ${p.originalPrice} MAD
+                  </span>
+                  <span class="text-[10px] text-zinc-400 font-mono">
+                    (Save ${savings} MAD)
+                  </span>
+                </div>
+              </div>
+
+              <!-- Right action buttons -->
+              <div class="flex sm:flex-col gap-2 shrink-0">
+                <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="flex-1 sm:flex-none px-3.5 py-2.5 bg-[#00FF66] hover:bg-[#00e65c] text-black text-xs font-black rounded-xl text-center flex items-center justify-center gap-1.5 shadow-[0_0_12px_rgba(0,255,102,0.3)] active:scale-95 transition-all">
+                  <span>Order</span>
+                </a>
+                <button onclick="openQuickView('${p.id}')" class="px-3 py-2.5 rounded-xl border border-white/15 text-zinc-300 hover:text-white text-xs font-bold bg-white/[0.03]">
+                  <span>Specs</span>
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Generates pre-formatted WhatsApp order message for the Hero Pack
+      function getPackWhatsAppUrl(packKey) {
+        const pack = PACKS[packKey] || PACKS.fitness;
+        const savings = pack.originalPrice - pack.discountedPrice;
+        const msg = [
+          `*⚡ DAKHLA FIT — PRO BUNDLE / PACK ORDER*`,
+          `--------------------------------`,
+          `*Order Type:* COMPLETE 3-IN-1 PRO BUNDLE / PACK (باقة متكاملة)`,
+          `*Selected Pack:* ${pack.title}`,
+          `*Category:* ${pack.category.toUpperCase()} PRO PACK`,
+          `*3 Pro Tools Included:*`,
+          pack.bundledItems ? pack.bundledItems.map(it => `  • [${it.num}] ${it.name} (${it.spec})`).join('\n') : `  • ${pack.itemsSummary}`,
+          `--------------------------------`,
+          `*Complete Bundle Price:* *${pack.discountedPrice} MAD*`,
+          `*Regular Price:* ${pack.originalPrice} MAD`,
+          `*Your Savings:* ${savings} MAD (-${pack.discountPercent}% OFF)`,
+          `*Shipping:* FREE Express 24-48h Courier 🚚`,
+          `*Payment:* Cash on Delivery (Paiement à la livraison) 🇲🇦`,
+          `--------------------------------`,
+          `*Full Name:* [Enter your full name]`,
+          `*City:* [Enter your city in Morocco]`,
+          `*Phone:* [Enter phone number]`,
+          `--------------------------------`,
+          `Salam Dakhla Fit! I want to order this complete 3-tool Pro Pack. Please confirm delivery with Cash on Delivery.`
+        ].join('\n');
+        return `https://wa.me/212600112233?text=${encodeURIComponent(msg)}`;
+      }
+
+      // Switches between the 3 core packs: Home Fitness, Running, Swimming
+      function switchHeroPack(packKey) {
+        activePackKey = packKey;
+
+        // Update Pack Tab Buttons
+        const tabKeys = ['fitness', 'running', 'swimming'];
+        tabKeys.forEach(key => {
+          const tabBtn = document.getElementById('pack-tab-' + key);
+          if (tabBtn) {
+            const subLabel = tabBtn.querySelector('span:last-child');
+            if (key === packKey) {
+              tabBtn.className = 'pack-tab-btn py-2.5 px-1.5 text-center rounded-xl text-xs font-bold transition-all flex flex-col items-center justify-center gap-1 bg-[#00FF66] text-black shadow-[0_0_15px_rgba(0,255,102,0.45)] cursor-pointer ring-1 ring-[#00FF66]';
+              if (subLabel) {
+                subLabel.className = 'text-[9px] font-mono font-black uppercase opacity-90 pointer-events-none bg-black/15 px-1.5 py-0.2 rounded';
+              }
+            } else {
+              tabBtn.className = 'pack-tab-btn py-2.5 px-1.5 text-center rounded-xl text-xs font-bold transition-all flex flex-col items-center justify-center gap-1 text-zinc-400 hover:text-white bg-transparent hover:bg-white/5 cursor-pointer';
+              if (subLabel) {
+                subLabel.className = 'text-[9px] font-mono font-bold uppercase text-zinc-500 pointer-events-none';
+              }
+            }
+          }
+        });
+
+        // Re-render hero pack
+        renderHeroPack(packKey);
+      }
+
+      // Renders the Hero Pack Centerpiece card
+      function renderHeroPack(packKey) {
+        const container = document.getElementById('heroPackCardContainer');
+        if (!container) return;
+
+        const pack = PACKS[packKey] || PACKS.fitness;
+        const savings = pack.originalPrice - pack.discountedPrice;
+        const waUrl = getPackWhatsAppUrl(packKey);
+
+        // Update sticky bottom button as well
+        const stickyBtn = document.getElementById('stickyWaBtn');
+        const stickyBtnText = document.getElementById('stickyWaBtnText');
+        if (stickyBtn) stickyBtn.href = waUrl;
+        if (stickyBtnText) stickyBtnText.innerText = `Order Complete Pack via WhatsApp · ${pack.discountedPrice} MAD`;
+
+        container.innerHTML = `
+          <div class="relative bg-gradient-to-b from-[#18181f] via-[#121216] to-[#0d0d10] border-2 border-[#00FF66] rounded-3xl p-4 sm:p-5 overflow-hidden shadow-[0_0_35px_rgba(0,255,102,0.25)] space-y-4 transition-all duration-300">
+            
+            <!-- Glowing Neon Green Discount Badge: Explicit PRO BUNDLE / PACK -->
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-[#00FF66] text-black text-xs font-black rounded-lg shadow-lg uppercase tracking-wide">
+                <span>⚡</span>
+                <span>${pack.badge}</span>
+              </span>
+              <span class="text-xs font-mono font-bold text-[#00FF66] flex items-center gap-1">
+                <span>★ 4.98</span>
+                <span class="text-zinc-400 font-normal">(${pack.reviews} verified athletes)</span>
+              </span>
+            </div>
+
+            <!-- Clarification Notice: Complete 3-in-1 Bundle (NOT Single Item) -->
+            <div class="flex items-center gap-2.5 p-3 rounded-2xl bg-[#00FF66]/10 border border-[#00FF66]/30 text-xs text-white font-mono">
+              <span class="text-xl shrink-0">📦</span>
+              <div>
+                <div class="font-bold text-[#00FF66] uppercase text-[11px] tracking-wide flex items-center gap-1.5">
+                  <span>PRO BUNDLE / PACK</span>
+                  <span class="text-zinc-400">·</span>
+                  <span class="text-white">باقة رياضية متكاملة 3 في 1</span>
+                </div>
+                <div class="text-[11px] text-zinc-300 mt-0.5">
+                  This is a complete all-in-one pack containing <strong>all 3 pro athletic tools</strong> listed below. Not sold as a single individual piece.
+                </div>
+              </div>
+            </div>
+
+            <!-- Hero Pack Visual + Details -->
+            <div class="flex flex-col sm:flex-row gap-4 items-center">
+              <div class="relative w-full sm:w-48 aspect-[4/3] rounded-2xl overflow-hidden bg-black/60 shrink-0 border border-white/10 shadow-inner">
+                <img src="${pack.image}" alt="${pack.title}" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=800&auto=format&fit=crop'" />
+                <span class="absolute top-2 left-2 px-2 py-0.5 rounded bg-black/80 text-[10px] font-mono text-[#00FF66] font-bold uppercase border border-[#00FF66]/30">
+                  3-IN-1 PRO BUNDLE
+                </span>
+                <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-[#00FF66] text-[10px] font-mono text-black font-black">
+                  -${pack.discountPercent}% OFF
+                </span>
+              </div>
+
+              <div class="w-full space-y-1.5">
+                <div class="text-[11px] font-mono text-[#00FF66] font-bold uppercase">
+                  ${pack.subtitle}
+                </div>
+                <h2 class="text-lg sm:text-xl font-black text-white font-display leading-snug">
+                  ${pack.title}
+                </h2>
+                <div class="p-2.5 rounded-xl bg-white/[0.03] border border-white/5 text-xs font-mono text-zinc-300">
+                  <span class="text-zinc-500 text-[10px] uppercase block mb-0.5 font-bold">Included In This Pro Bundle:</span>
+                  <span class="text-white font-bold leading-relaxed">${pack.itemsSummary}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- PRO TOOLS BREAKDOWN: LISTING ALL 3 TOOLS INCLUDED -->
+            <div class="space-y-2 p-3 rounded-2xl bg-black/40 border border-white/10">
+              <div class="flex items-center justify-between text-[11px] font-mono text-zinc-400">
+                <span class="text-white font-bold uppercase flex items-center gap-1.5">
+                  <span class="text-[#00FF66]">✓</span> 3 PRO TOOLS INCLUDED IN THIS PACK:
+                </span>
+                <span class="text-[10px] text-[#00FF66] font-bold bg-[#00FF66]/10 px-2 py-0.5 rounded border border-[#00FF66]/30">
+                  ALL 3 INCLUDED
+                </span>
+              </div>
+              <div class="grid grid-cols-1 gap-2 pt-1">
+                ${pack.bundledItems.map(item => `
+                  <div class="flex items-center gap-2.5 p-2 rounded-xl bg-white/[0.04] border border-white/5">
+                    <span class="w-5 h-5 rounded-md bg-[#00FF66] text-black text-xs font-black flex items-center justify-center shrink-0">
+                      ${item.num}
+                    </span>
+                    <div class="min-w-0 flex-1">
+                      <div class="text-xs font-bold text-white truncate">${item.name}</div>
+                      <div class="text-[10px] text-zinc-400 font-mono truncate">${item.spec}</div>
+                    </div>
+                    <span class="text-[10px] font-mono text-[#00FF66] font-bold shrink-0 flex items-center gap-1">
+                      <span>✓</span> Included
+                    </span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- EXACTLY 3 SHORT BENEFIT-DRIVEN BULLET POINTS (Zero Fluff) -->
+            <div class="space-y-2 pt-1 border-t border-white/10">
+              <span class="text-[10px] font-mono uppercase text-zinc-400 tracking-wider font-bold block">
+                WHY ATHLETES CHOOSE THIS COMPLETE PACK:
+              </span>
+              <ul class="space-y-2 text-xs">
+                <li class="flex items-start gap-2.5">
+                  <span class="p-1 rounded-md bg-[#00FF66]/10 text-[#00FF66] font-black shrink-0 text-xs">✓</span>
+                  <div>
+                    <strong class="text-white font-bold">${pack.bullets[0].title}:</strong>
+                    <span class="text-zinc-300"> ${pack.bullets[0].text}</span>
+                  </div>
+                </li>
+                <li class="flex items-start gap-2.5">
+                  <span class="p-1 rounded-md bg-[#00FF66]/10 text-[#00FF66] font-black shrink-0 text-xs">✓</span>
+                  <div>
+                    <strong class="text-white font-bold">${pack.bullets[1].title}:</strong>
+                    <span class="text-zinc-300"> ${pack.bullets[1].text}</span>
+                  </div>
+                </li>
+                <li class="flex items-start gap-2.5">
+                  <span class="p-1 rounded-md bg-[#00FF66]/10 text-[#00FF66] font-black shrink-0 text-xs">✓</span>
+                  <div>
+                    <strong class="text-white font-bold">${pack.bullets[2].title}:</strong>
+                    <span class="text-zinc-300"> ${pack.bullets[2].text}</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <!-- High-Contrast Price Block -->
+            <div class="pt-3 border-t border-white/10 flex items-baseline justify-between">
+              <div>
+                <div class="text-xs text-zinc-500 font-mono line-through">
+                  ${pack.originalPrice} MAD Regular Total Price
+                </div>
+                <div class="text-3xl font-black text-[#00FF66] font-display flex items-baseline gap-1">
+                  <span>${pack.discountedPrice}</span>
+                  <span class="text-sm font-bold text-white font-mono">MAD</span>
+                </div>
+                <span class="text-[10px] font-mono text-[#00FF66] block font-bold">COMPLETE 3-IN-1 PACK PRICE</span>
+              </div>
+              <div class="text-right">
+                <span class="text-[10px] font-mono text-zinc-400 block uppercase">INSTAGRAM EXCLUSIVE</span>
+                <span class="text-xs font-bold text-[#00FF66] font-mono block">
+                  Save ${savings} MAD (-${pack.discountPercent}%)
+                </span>
+                <span class="text-[10px] text-zinc-400 font-mono">🚚 Free Express Delivery</span>
+              </div>
+            </div>
+
+            <!-- Pulsing Thumb-Friendly WhatsApp Button -->
+            <div class="space-y-2 pt-1">
+              <a 
+                id="heroPackWaBtn" 
+                href="${waUrl}" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="pulse-neon w-full py-4 px-5 bg-[#00FF66] hover:bg-[#00e65c] text-black font-black text-sm sm:text-base rounded-2xl flex items-center justify-center gap-2.5 shadow-[0_0_25px_rgba(0,255,102,0.5)] active:scale-95 transition-all text-center cursor-pointer"
+              >
+                <svg class="w-5 h-5 fill-black shrink-0" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.275.072.376-.044c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-10.416c-4.415 0-8 3.585-8 8 0 1.411.367 2.738 1.008 3.891l-1.07 3.916 4.025-1.056c1.11.603 2.38 0.949 3.737.949 4.415 0 8-3.585 8-8s-3.585-8-8-8z"/></svg>
+                <span>Order Complete Pack via WhatsApp · ${pack.discountedPrice} MAD</span>
+              </a>
+
+              <!-- Scarcity & Trust Micro-chips -->
+              <div class="flex items-center justify-between text-[11px] font-mono text-zinc-400 px-1 pt-1">
+                <span class="flex items-center gap-1 text-[#00FF66] font-bold">
+                  <span>●</span>
+                  <span>${pack.stockLeft} packs left at this price</span>
+                </span>
+                <span>🚚 Paiement à la livraison 🇲🇦</span>
+              </div>
+            </div>
+
+          </div>
+        `;
+      }
+
+      // Explicit Category Selection & Filtering Handler for individual gear
+      function selectCategory(cat) {
+        currentCategory = (cat || 'all').toLowerCase();
+
+        // If specific discipline is clicked, also sync hero pack!
+        if (cat === 'swimming' || cat === 'running' || cat === 'fitness') {
+          switchHeroPack(cat);
+        }
+
+        // 1. Add active class to clicked category card and remove from others
+        document.querySelectorAll('.cat-grid-btn').forEach(btn => {
+          const btnCat = btn.getAttribute('data-category');
+          if (btnCat === currentCategory) {
+            btn.className = 'category-btn category-card cat-grid-btn active p-2.5 rounded-2xl bg-[#141418] border-2 border-[#00FF66] shadow-[0_0_15px_rgba(0,255,102,0.35)] transition-all flex flex-col items-center justify-center gap-1 text-center cursor-pointer active:scale-95 text-[#00FF66]';
+          } else {
+            btn.className = 'category-btn category-card cat-grid-btn p-2.5 rounded-2xl bg-[#141418] border border-white/10 hover:border-[#00FF66]/60 transition-all flex flex-col items-center justify-center gap-1 text-center cursor-pointer active:scale-95 text-white';
+          }
+        });
+
+        // Update "Show All" button state
+        const allBtn = document.getElementById('cat-all');
+        if (allBtn) {
+          if (currentCategory === 'all') {
+            allBtn.className = 'category-btn category-card active text-[#00FF66] underline font-bold cursor-pointer transition-all';
+          } else {
+            allBtn.className = 'category-btn category-card text-zinc-400 hover:text-[#00FF66] font-bold cursor-pointer transition-all';
+          }
+        }
+
+        // 2. Dynamically filter and toggle product cards visibility
+        filterProductCards(currentCategory);
+      }
+
+      // Toggles DOM visibility and dynamically filters products container underneath
+      function filterProductCards(category) {
+        renderProducts();
+
+        // Direct DOM visibility check & toggle on all product cards in container
+        const cards = document.querySelectorAll('#productsGrid .product-card');
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+          const cardCat = card.getAttribute('data-category');
+          if (category === 'all' || cardCat === category) {
+            card.style.display = 'flex';
+            visibleCount++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        const countLabel = document.getElementById('resultsCount');
+        if (countLabel) {
+          const catName = category === 'all' ? 'All Disciplines' : category.toUpperCase();
+          countLabel.innerText = `Showing ${visibleCount} items (${catName})`;
+        }
+      }
+
+      // Global alias for compatibility
+      function filterCategory(cat) {
+        selectCategory(cat);
+      }
+
+      function handleSearch(val) {
+        searchQuery = val;
+        renderProducts();
+      }
+
+      function handleSort(val) {
+        sortBy = val;
+        renderProducts();
+      }
+
+      function resetFilters() {
+        searchQuery = '';
+        currentCategory = 'all';
+        document.getElementById('searchInput').value = '';
+        filterCategory('all');
+      }
+
+      function getDirectWhatsAppUrl(product, qty = 1, city = '') {
+        const total = product.discountedPrice * qty;
+        const savings = (product.originalPrice - product.discountedPrice) * qty;
+        const msg = [
+          `*⚡ DAKHLA FIT — ORDER*`,
+          `--------------------------------`,
+          `*Item:* ${product.name}`,
+          `*Category:* ${product.category.toUpperCase()}`,
+          `*Quantity:* ${qty}`,
+          `*Price:* ${product.discountedPrice} MAD (Saved: ${savings} MAD)`,
+          `*Total:* *${total} MAD*`,
+          `--------------------------------`,
+          city ? `*Delivery City:* ${city}` : `*Delivery City:* [Enter your city in Morocco]`,
+          `*Client Name:* [Enter your name]`,
+          `--------------------------------`,
+          `Salam Dakhla Fit! I would like to confirm my order. Please dispatch with Cash on Delivery. 🇲🇦`
+        ].join('\n');
+        return `https://wa.me/212600112233?text=${encodeURIComponent(msg)}`;
+      }
+
+      // Quick View Bottom Sheet
+      function openQuickView(id) {
+        activeProduct = PRODUCTS.find(p => p.id === id);
+        if (!activeProduct) return;
+        modalQty = 1;
+        updateModalSheet();
+        const m = document.getElementById('quickViewModal');
+        m.classList.remove('hidden');
+        m.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeQuickView() {
+        const m = document.getElementById('quickViewModal');
+        m.classList.add('hidden');
+        m.classList.remove('flex');
+        document.body.style.overflow = '';
+      }
+
+      function updateModalSheet() {
+        if (!activeProduct) return;
+        const p = activeProduct;
+        const total = p.discountedPrice * modalQty;
+        const savings = (p.originalPrice - p.discountedPrice) * modalQty;
+        const cityVal = document.getElementById('modalCityInput')?.value || '';
+        const waUrl = getDirectWhatsAppUrl(p, modalQty, cityVal);
+
+        document.getElementById('modalContent').innerHTML = `
+          <div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-black/40 border border-white/10">
+            <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover" />
+            <div class="absolute top-3 left-3 flex items-center gap-1.5">
+              <span class="px-2.5 py-1 bg-[#00FF66] text-black text-xs font-black rounded-lg">
+                -${p.discountPercent}% OFF
+              </span>
+              <span class="px-2 py-0.5 bg-black/75 text-zinc-300 text-[10px] font-mono uppercase rounded">
+                ${p.category}
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between text-xs font-mono text-zinc-400 mb-1">
+              <span class="text-[#00FF66] font-bold uppercase">${p.category} Pro Spec</span>
+              <span class="text-zinc-300 font-bold">★ ${p.rating} (${p.reviews} athletes)</span>
+            </div>
+            <h2 class="text-xl font-black text-white font-display leading-tight">${p.name}</h2>
+            <p class="text-xs text-zinc-400 font-mono mt-1">${p.tagline}</p>
+
+            <div class="mt-3 p-3.5 rounded-xl bg-black/40 border border-white/10 flex items-baseline justify-between">
+              <div>
+                <span class="text-xs font-mono text-zinc-500 line-through block">${p.originalPrice} MAD</span>
+                <div class="text-2xl font-black text-[#00FF66] font-display flex items-baseline gap-1">
+                  <span>${p.discountedPrice}</span>
+                  <span class="text-xs font-bold text-white font-mono">MAD</span>
+                </div>
+              </div>
+              <div class="text-right">
+                <span class="text-xs font-mono text-zinc-300 font-bold">Instant Save +${savings} MAD</span>
+              </div>
+            </div>
+
+            <p class="mt-3 text-xs text-zinc-300 leading-relaxed">${p.desc}</p>
+          </div>
+
+          <div class="pt-2">
+            <span class="text-[10px] font-mono uppercase text-zinc-400 block mb-2">Technical Specs</span>
+            <div class="grid grid-cols-3 gap-2 text-xs font-mono">
+              ${Object.entries(p.specs).map(([k,v]) => `
+                <div class="p-2 rounded-xl bg-white/[0.03] border border-white/5">
+                  <span class="text-zinc-500 block text-[9px] uppercase">${k}</span>
+                  <span class="text-zinc-200 font-bold truncate block">${v}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="pt-3 border-t border-white/10 space-y-3">
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[10px] font-mono text-zinc-400 mb-1 uppercase">Quantity</label>
+                <div class="flex items-center border border-white/15 rounded-xl overflow-hidden bg-black/40">
+                  <button onclick="changeModalQty(-1)" class="px-3.5 py-2 text-zinc-400 hover:text-white">-</button>
+                  <span class="flex-1 text-center font-mono font-bold text-sm text-white">${modalQty}</span>
+                  <button onclick="changeModalQty(1)" class="px-3.5 py-2 text-zinc-400 hover:text-white">+</button>
+                </div>
+              </div>
+              <div>
+                <label class="block text-[10px] font-mono text-zinc-400 mb-1 uppercase">City in Morocco</label>
+                <input type="text" id="modalCityInput" oninput="updateModalWaLink()" placeholder="Casablanca, Dakhla..." class="w-full px-3 py-2 text-xs bg-black/40 border border-white/15 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-[#00FF66]" />
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between text-xs font-mono bg-white/[0.02] p-2 rounded-xl border border-white/5">
+              <span>Total (${modalQty} item):</span>
+              <span class="text-base font-black text-[#00FF66]">${total} MAD</span>
+            </div>
+
+            <a id="modalWaBtn" href="${waUrl}" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 bg-[#00FF66] hover:bg-[#00e65c] text-black font-extrabold text-sm rounded-xl flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(0,255,102,0.4)]">
+              <span>Order via WhatsApp Now</span>
+            </a>
+          </div>
+        `;
+      }
+
+      function changeModalQty(delta) {
+        modalQty = Math.max(1, modalQty + delta);
+        updateModalSheet();
+      }
+
+      function updateModalWaLink() {
+        if (!activeProduct) return;
+        const cityVal = document.getElementById('modalCityInput')?.value || '';
+        const waUrl = getDirectWhatsAppUrl(activeProduct, modalQty, cityVal);
+        const btn = document.getElementById('modalWaBtn');
+        if (btn) btn.href = waUrl;
+      }
+
+      // Category Button Event Listeners
+      function initCategoryListeners() {
+        // Explicit click event listener on every category card/button (Swimming, Running, Fitness, All)
+        const categoryButtons = document.querySelectorAll('.category-btn, .category-card, [data-category]');
+        categoryButtons.forEach(btn => {
+          btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const cat = this.getAttribute('data-category');
+            if (cat) {
+              selectCategory(cat);
+            }
+          });
+        });
+
+        // Global delegated listener as a safety net for mobile taps and child elements
+        document.addEventListener('click', function(e) {
+          const trigger = e.target.closest('[data-category]');
+          if (!trigger) return;
+          if (trigger.classList.contains('category-btn') || trigger.classList.contains('category-card') || trigger.id.startsWith('cat-')) {
+            e.preventDefault();
+            const cat = trigger.getAttribute('data-category');
+            if (cat) {
+              selectCategory(cat);
+            }
+          }
+        });
+      }
+
+      // Initial render & listeners
+      initCategoryListeners();
+      renderHeroPack('fitness');
+      renderProducts();
+
+      // Ambient 2D Canvas Floating Neon Particles (<1% CPU, Zero Lag)
+      (function initParticles() {
+        const canvas = document.getElementById('hero-particles');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        let width, height;
+        const particles = [];
+        const count = 35;
+
+        function resize() {
+          width = canvas.width = canvas.offsetWidth;
+          height = canvas.height = canvas.offsetHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        for (let i = 0; i < count; i++) {
+          particles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            radius: Math.random() * 2 + 1,
+            vx: (Math.random() - 0.5) * 0.4,
+            vy: -0.25 - Math.random() * 0.4,
+            alpha: Math.random() * 0.7 + 0.3,
+            color: Math.random() > 0.35 ? '#00FF66' : '#ffffff'
+          });
+        }
+
+        function draw() {
+          ctx.clearRect(0, 0, width, height);
+          for (let i = 0; i < count; i++) {
+            const p = particles[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            if (p.y < 0) {
+              p.y = height;
+              p.x = Math.random() * width;
+            }
+            if (p.x < 0) p.x = width;
+            if (p.x > width) p.x = 0;
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = p.color === '#00FF66' ? `rgba(0, 255, 102, ${p.alpha})` : `rgba(255, 255, 255, ${p.alpha * 0.6})`;
+            ctx.shadowBlur = 6;
+            ctx.shadowColor = '#00FF66';
+            ctx.fill();
+          }
+          requestAnimationFrame(draw);
+        }
+        draw();
+      })();
+    </script>
+  </body>
+</html>
